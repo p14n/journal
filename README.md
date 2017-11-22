@@ -1,7 +1,8 @@
 Journal
 =============
 
-This repository is a place to experiment and document experimentation while building an application architecture with the following characteristics
+This repository is a place to expreriment and document experimentation while building an application architecture with the following characteristics:
+
 * Mobile and web facing
 * Fully tested at unit, system and integration levels
 * Allows fast experimentation
