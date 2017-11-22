@@ -1,0 +1,32 @@
+{:objects
+ {:Person
+  {:description "A person in the system"
+   :fields
+   {:id {:type ID}
+    :firstname {:type (non-null String)}
+    :lastname {:type (non-null String)}
+    :groups {:type (non-null (list :Group))
+             :description "Groups this person belongs to"
+             :resolve :Person/groups}
+    :email {:type (non-null String)}}}}
+
+ :Group
+ {:description "A group of people"
+  :fields
+  {:id {:type ID}
+   :people {:type (non-null (list :Person))
+            :description "People in this group"
+            :resolve :Group/people}}}
+
+ :queries
+ {:person_by_id
+  {:type :Person
+   :description "Access a Person by its unique id, if it exists"
+   :args {:id {:type ID}}
+   :resolve :query/person-by-id}
+
+  :group_by_id
+  {:type :Group
+   :description "Access a Group by its unique id, if it exists"
+   :args {:id {:type ID}}
+   :resolve :query/group-by-id}}}

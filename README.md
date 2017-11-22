@@ -8,3 +8,8 @@ This repository is a place to expreriment and document experimentation while bui
 * Allows fast experimentation
 * Allows a developer to run on a laptop
 * Will scale to millions of users
+
+### Run tests ###
+```
+boot watch-test
+```
