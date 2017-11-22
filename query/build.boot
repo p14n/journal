@@ -1,0 +1,46 @@
+(set-env!
+  :project 'journal
+  :version "0.0.1-SNAPSHOT"
+  :source-paths #{"src"}
+  :resource-paths #{"resources"}
+  :dependencies '[;; App
+                  [org.clojure/clojure    "1.9.0-RC1"]
+                  [com.datomic/datomic-free "0.9.5407"]
+                  [compojure "1.5.1"]
+                  [http-kit "2.2.0"] 
+                  [com.walmartlabs/lacinia "0.18.0" :exclusions [clojure-future-spec]]
+
+                  ;;Dev
+                  [metosin/spec-tools "0.5.1"               :scope "provided"]
+                  [org.clojure/tools.namespace "0.2.11"     :scope "provided"]
+                  [org.clojure/tools.nrepl "0.2.12"         :scope "provided"]
+                  [boot/core              "2.7.2"           :scope "provided"]
+                  [adzerk/boot-test "1.0.7"                 :scope "test"]
+                  [tolitius/boot-check    "0.1.2"           :scope "test"]])
+
+(require '[tolitius.boot-check :as check]
+         '[adzerk.boot-test :as bt]
+         '[clojure.tools.namespace.repl :refer [set-refresh-dirs refresh] :as tn])
+
+(deftask watch-test
+  "Runs tests"
+  []
+  (set-env! :source-paths #{"src" "test"}
+            :resource-paths #{"resources" "test-resources"})
+  (comp (watch) (bt/test)))
+
+(deftask check-sources []
+  (set-env! :source-paths #{"src" "test"})
+  (comp
+    (check/with-yagni)
+    (check/with-eastwood)
+    (check/with-kibit)
+    (check/with-bikeshed)))
+
+(deftask lein []
+  (let [en (get-env)
+     name (:project en)
+     version (:version en)
+     deps (:dependencies en)
+     proj `(~'defproject ~name ~version :dependencies ~deps)]
+     (spit "project.clj" proj)))
