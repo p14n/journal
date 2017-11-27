@@ -1,20 +1,20 @@
 {:objects
- {:Person
+ {:p14n.spec/Person
   {:description "A person in the system"
    :fields
-   {:id {:type ID}
-    :firstname {:type (non-null String)}
-    :lastname {:type (non-null String)}
-    :groups {:type (non-null (list :Group))
+   {:p14n.spec/ID {:type ID}
+    :p14n.spec/firstname {:type (non-null String)}
+    :p14n.spec/lastname {:type (non-null String)}
+    :p14n.spec/groups {:type (non-null (list :p14n.spec/Group))
              :description "Groups this person belongs to"
              :resolve :Person/groups}
-    :email {:type (non-null String)}}}}
+    :p14n.spec/email {:type (non-null String)}}}}
 
- :Group
+ :p14n.spec/Group
  {:description "A group of people"
   :fields
   {:id {:type ID}
-   :people {:type (non-null (list :Person))
+   :p14n.spec/people {:type (non-null (list :p14n.spec/Person))
             :description "People in this group"
             :resolve :Group/people}}}
 

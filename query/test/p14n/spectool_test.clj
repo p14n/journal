@@ -21,7 +21,7 @@
 (def converted (pst/convert-to-graphql ps/app-schema))
 
 (println (pst/convert-and-refactor (first (:objects ps/app-schema))))
-
-(t/is (= schema-map converted))
+(println (class  (get-in (first (:objects converted)) [:p14n.spec/Person :fields :p14n.spec/email :type])))
+(t/is (= (:objects schema-map) (:objects  converted)))
 
 

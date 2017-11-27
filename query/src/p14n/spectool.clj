@@ -31,7 +31,41 @@
         refs-removed (apply-to-vals refactored remove-refs)]
     (merge refs-removed {:refs refs})))
 
+(defn graphql-type [refs field object-set wrapfunc]
+  (do ;(println object-set)
+      ;(println "TYPE " field " " (coll? field) " " (contains? object-set field))
+      (cond
+        (contains? object-set field) (wrapfunc field)
+        (coll? field) (map #(graphql-type refs % object-set wrapfunc) field)
+        (= field :p14n.spec/ID) (symbol "ID")
+        (= field 'clojure.core/string?) (wrapfunc (symbol "String"))
+        (= field 'clojure.spec.alpha/coll-of) (symbol "list")
+        (contains? refs field) (graphql-type refs (refs field) object-set wrapfunc)
+        :default (wrapfunc field))))
+
+(defn create-field [refs field object-set wrapfunc]
+  {field {:type (graphql-type refs field object-set wrapfunc)}})
+
+(defn not-null-wrapper [x]
+  `(~(symbol "not-null") ~x))
+
+(defn create-lacinia-object [refs spec-object object-set]
+  { (:def spec-object)
+   {:description ""
+    :fields (apply merge
+                   (apply conj
+                          (map #(create-field refs % object-set not-null-wrapper) (:req spec-object))
+                          (map #(create-field refs % object-set identity) (:opt spec-object))))}})
+
+(defn merge-maps-in-coll-value [m k]
+  (let [mval (m k)
+        merged (apply merge mval)]
+    (merge m {k merged})))
+
 (defn convert-to-graphql [app-schema]
   (let [refactored (apply-to-vals app-schema #(map convert-and-refactor %))
-        refs-moved (move-refs-to-top refactored)]
-    refs-moved))
+        refs-moved (move-refs-to-top refactored)
+        object-set (set (map #(:def %) (:objects refs-moved)))
+        new-objects (apply merge (map #(create-lacinia-object (:refs refs-moved) % object-set)
+                                       (:objects refs-moved)))]
+    (merge refs-moved {:objects new-objects})))
