@@ -5,11 +5,6 @@
              [p14n.spec :as ps]
              [p14n.spectool :as pst]))
 
-(t/is (= (pst/apply-to-vals
-          {:a {:1 2}}
-          #(pst/apply-to-vals % inc))
-         {:a {:1 3}}))
-
 (def expected-schema-string
   (with-open [in (java.io.PushbackReader.
                   (io/reader "test-resources/target-schema.edn"))]
@@ -18,10 +13,22 @@
 
 (def schema-map (read-string expected-schema-string))
 
-(def converted (pst/convert-to-graphql ps/app-schema))
+(def converted (pst/convert-to-object-tuples ps/app-schema))
 
-(println (pst/convert-and-refactor (first (:objects ps/app-schema))))
-(println (class  (get-in (first (:objects converted)) [:p14n.spec/Person :fields :p14n.spec/email :type])))
-(t/is (= (:objects schema-map) (:objects  converted)))
+(def graphql (pst/convert-to-graphql converted))
+;(clojure.pprint/pprint (keys  schema-map))
+;(println "+++++++++++++++++")
+;(clojure.pprint/pprint (:objects schema-map))
+;(println "**********************")
+;(clojure.pprint/pprint (:objects graphql))
+
+(t/deftest verify-object-conversion
+  (t/is (= (:objects schema-map) (:objects graphql))))
+
+(t/deftest verify-query-conversion
+  (t/is (= (:queries schema-map) (:queries graphql))))
+
+
+
 
 

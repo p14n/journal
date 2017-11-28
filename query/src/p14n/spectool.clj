@@ -3,9 +3,6 @@
             [spec-tools.visitor :as visitor]
             [p14n.spec :as ps]))
 
-(defn apply-to-vals [m f]
-  (reduce-kv #(assoc %1 %2 (f %3)) {} m))
-
 (defn convert-spec-object [so]
   (let [specs (atom {})]
     (visitor/visit
@@ -19,17 +16,15 @@
   (into {:ref output :def spec-key}
         (map vec (partition 2 (drop 1 (spec-key output))))))
 
-(defn convert-and-refactor [spec-key]
-  (->> spec-key
-       (convert-spec-object)
-       (refactor-spec-output spec-key)))
+(defn convert-spec-object-tuple-to-data [object-tuple]
+  (let [converted-key
+        (->> (first object-tuple)
+             (convert-spec-object)
+             (refactor-spec-output (first object-tuple)))]
+    [(first object-tuple) {:object (dissoc converted-key :ref)
+                           :ref (:ref converted-key)
+                           :other (second object-tuple)}]))
 
-(defn move-refs-to-top [refactored]
-  (let [objects-and-queries (vals refactored)
-        refs (apply merge (map :ref (flatten objects-and-queries)))
-        remove-refs (fn [v] (map #(dissoc % :ref) v))
-        refs-removed (apply-to-vals refactored remove-refs)]
-    (merge refs-removed {:refs refs})))
 
 (defn graphql-type [refs field object-set wrapfunc]
   (do ;(println object-set)
@@ -43,29 +38,31 @@
         (contains? refs field) (graphql-type refs (refs field) object-set wrapfunc)
         :default (wrapfunc field))))
 
-(defn create-field [refs field object-set wrapfunc]
-  {field {:type (graphql-type refs field object-set wrapfunc)}})
+(defn create-field [refs field object-set wrapfunc fields-info]
+  {field (merge (field fields-info)
+                {:type (graphql-type refs field object-set wrapfunc)})})
 
 (defn not-null-wrapper [x]
-  `(~(symbol "not-null") ~x))
+  `(~(symbol "non-null") ~x))
 
-(defn create-lacinia-object [refs spec-object object-set]
-  { (:def spec-object)
-   {:description ""
-    :fields (apply merge
-                   (apply conj
-                          (map #(create-field refs % object-set not-null-wrapper) (:req spec-object))
-                          (map #(create-field refs % object-set identity) (:opt spec-object))))}})
+(defn create-lacinia-object [[spec-key spec-converted] object-set]
+  (let [refs (:ref spec-converted)
+        spec-object (:object spec-converted)
+        fields-info (get-in spec-converted [:other :fields])]
+    {(:def spec-object)
+     (merge (:other spec-converted)
+            {:fields (apply merge
+                            (apply conj
+                                   (map #(create-field refs % object-set not-null-wrapper fields-info) (:req spec-object))
+                                   (map #(create-field refs % object-set identity fields-info) (:opt spec-object))))})}))
 
-(defn merge-maps-in-coll-value [m k]
-  (let [mval (m k)
-        merged (apply merge mval)]
-    (merge m {k merged})))
 
-(defn convert-to-graphql [app-schema]
-  (let [refactored (apply-to-vals app-schema #(map convert-and-refactor %))
-        refs-moved (move-refs-to-top refactored)
-        object-set (set (map #(:def %) (:objects refs-moved)))
-        new-objects (apply merge (map #(create-lacinia-object (:refs refs-moved) % object-set)
-                                       (:objects refs-moved)))]
-    (merge refs-moved {:objects new-objects})))
+(defn convert-to-object-tuples [app-schema]
+  (map convert-spec-object-tuple-to-data
+       (:objects app-schema)))
+
+(defn convert-to-graphql [refactored-object-tuples ]
+  (let [object-set (set (map first refactored-object-tuples))
+        lacinia-objects (into {} (map #(create-lacinia-object % object-set)
+                                       refactored-object-tuples))]
+    {:objects lacinia-objects}))
