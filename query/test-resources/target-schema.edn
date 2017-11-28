@@ -20,14 +20,14 @@
                        :resolve :Group/people}}}}
 
  :queries
- {:person_by_id
-  {:type :Person
-   :description "Access a Person by its unique id, if it exists"
-   :args {:id {:type ID}}
-   :resolve :query/person-by-id}
+ {:Person_by_id
+  {:type :p14n.spec/Person
+   :description "Access a Person by ID, if it exists"
+   :args {ID {:type ID}}
+   :resolve :query/Person-by-id}
 
-  :group_by_id
-  {:type :Group
-   :description "Access a Group by its unique id, if it exists"
-   :args {:id {:type ID}}
-   :resolve :query/group-by-id}}}
+  :Group_by_id
+  {:type :p14n.spec/Group
+   :description "Access a Group by ID, if it exists"
+   :args {ID {:type ID}}
+   :resolve :query/Group-by-id}}}

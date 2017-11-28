@@ -27,16 +27,14 @@
 
 
 (defn graphql-type [refs field object-set wrapfunc]
-  (do ;(println object-set)
-      ;(println "TYPE " field " " (coll? field) " " (contains? object-set field))
-      (cond
-        (contains? object-set field) (wrapfunc field)
-        (coll? field) (map #(graphql-type refs % object-set wrapfunc) field)
-        (= field :p14n.spec/ID) (symbol "ID")
-        (= field 'clojure.core/string?) (wrapfunc (symbol "String"))
-        (= field 'clojure.spec.alpha/coll-of) (symbol "list")
-        (contains? refs field) (graphql-type refs (refs field) object-set wrapfunc)
-        :default (wrapfunc field))))
+  (cond
+    (contains? object-set field) (wrapfunc field)
+    (coll? field) (map #(graphql-type refs % object-set wrapfunc) field)
+    (= field :p14n.spec/ID) (symbol "ID")
+    (= field 'clojure.core/string?) (wrapfunc (symbol "String"))
+    (= field 'clojure.spec.alpha/coll-of) (symbol "list")
+    (contains? refs field) (graphql-type refs (refs field) object-set wrapfunc)
+    :default (wrapfunc field)))
 
 (defn create-field [refs field object-set wrapfunc fields-info]
   {field (merge (field fields-info)
@@ -61,8 +59,19 @@
   (map convert-spec-object-tuple-to-data
        (:objects app-schema)))
 
+(defn create-lacinia-id-query [[spec-key spec-object]]
+  (let [type-name (name spec-key)
+        query-name (str type-name "_by_id")
+        function-name (str type-name "-by-id")]
+    {(keyword query-name)
+     { :type spec-key
+      :description (str "Access a " type-name " by ID, if it exists")
+      :args { (symbol "ID") { :type (symbol "ID")} }
+      :resolve (keyword "query" function-name) }}))
+
 (defn convert-to-graphql [refactored-object-tuples ]
   (let [object-set (set (map first refactored-object-tuples))
         lacinia-objects (into {} (map #(create-lacinia-object % object-set)
-                                       refactored-object-tuples))]
-    {:objects lacinia-objects}))
+                                      refactored-object-tuples))
+        lacinia-queries (into {} (map create-lacinia-id-query refactored-object-tuples))]
+    {:objects lacinia-objects :queries lacinia-queries}))
