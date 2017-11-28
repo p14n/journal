@@ -9,6 +9,9 @@
                   [compojure "1.5.1"]
                   [http-kit "2.2.0"] 
                   [com.walmartlabs/lacinia "0.18.0" :exclusions [clojure-future-spec]]
+                  [mount "0.1.10"]
+                  [org.clojure/data.json "0.2.6"]
+
 
                   ;;Dev
                   [metosin/spec-tools "0.5.1"               :scope "provided"]
@@ -43,4 +46,19 @@
      version (:version en)
      deps (:dependencies en)
      proj `(~'defproject ~name ~version :dependencies ~deps)]
-     (spit "project.clj" proj)))
+    (spit "project.clj" proj)))
+
+(deftask dev []
+  (set-env! :source-paths #(conj % "src"))
+
+  (apply tn/set-refresh-dirs (get-env :directories))
+  (load-data-readers!)
+
+  (require 'p14n.main)
+  ;;(use 'job.config)
+  ;(eval '(reset! is-dev true))
+  (in-ns 'p14n.main))
+
+;; (deftask reset []
+;;   (stop)
+;;   (tn/refresh :after 'mount.core/start))
