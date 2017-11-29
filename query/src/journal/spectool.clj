@@ -58,7 +58,7 @@
               :object-set object-set
               :typemappingfunc mappingfunc}]
     {(simple-name spec-key)
-     (merge (:other spec-converted)
+     (merge (dissoc (:other spec-converted) :args)
             {:fields
              (apply merge
                     (apply conj
@@ -74,19 +74,33 @@
   (map convert-spec-object-tuple-to-data
        (:objects app-schema)))
 
-(defn create-lacinia-id-query [[spec-key spec-object]]
+
+(defn create-query-args [fields opts]
+  (let [args-info (:args-info opts)
+        filtered (filter #(contains? args-info %) fields)
+        converted (into {} (map #(create-field % opts) filtered))]
+    converted))
+
+(defn create-lacinia-id-query [[spec-key spec-object] object-set mappingfunc]
   (let [type-name (name spec-key)
-        query-name (str type-name "_by_id")
-        function-name (str type-name "-by-id")]
+        query-name (.toLowerCase type-name)
+        opts {:refs (:ref spec-object)
+              :fields-info (get-in spec-object [:other :fields])
+              :args-info (get-in spec-object [:other :args])
+              :object-set object-set
+              :typemappingfunc mappingfunc
+              :wrapfunc identity }
+        all-fields (apply conj (get-in spec-object [:object :req])
+                          (get-in spec-object [:object :opt]))]
     {(keyword query-name)
-     { :type (simple-name spec-key)
-      :description (str "Access a " type-name " by ID, if it exists")
-      :args { (keyword "ID") { :type (symbol "ID")} }
-      :resolve (keyword "query" function-name) }}))
+     {:type (simple-name spec-key)
+      :description (str "Access a " type-name)
+      :args (create-query-args all-fields opts)
+      :resolve (keyword "query" query-name) }}))
 
 (defn convert-to-graphql [refactored-object-tuples typemappingfunc]
   (let [object-set (set (map first refactored-object-tuples))
         lacinia-objects (into {} (map #(create-lacinia-object % object-set typemappingfunc)
                                       refactored-object-tuples))
-        lacinia-queries (into {} (map create-lacinia-id-query refactored-object-tuples))]
+        lacinia-queries (into {} (map #(create-lacinia-id-query % object-set typemappingfunc) refactored-object-tuples))]
     {:objects lacinia-objects :queries lacinia-queries}))

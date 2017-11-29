@@ -5,10 +5,8 @@
 
 
 (def resolver-map
-  {:query/Person-by-id (fn [a b c] (do{:email "hi"}))
-   :query/Group-by-id (constantly {})
-   :Person/groups (constantly {})
-   :Group/people (constantly {})})
+  {:query/person (fn [a b c] (do{:email "hi"}))
+   :query/group (fn [a b c] (do{:name "hi"}))})
 
 (defn startapp[]
   (let [gql-schema (g/graphql-schema-from-edn-file "resources/converted.edn" resolver-map)

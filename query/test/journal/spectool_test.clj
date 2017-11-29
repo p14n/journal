@@ -31,11 +31,13 @@
 
 (def app-schema
   {:objects {::Person {:description "A person in the system"
+                       :args #{::email ::ID}
                        :fields { ::groups { :description
                                            "Groups this person belongs to"
                                            :resolve :Person/groups}}}
              ::Group {:description "A group of people"
-                      :fields { ::people {:description "People in this group"
+                      :args #{::name ::ID}
+                      :fields {::people {:description "People in this group"
                                           :resolve :Group/people}}}}
    :queries [::Person ::Group]})
 
