@@ -64,11 +64,5 @@
 
 (deftask write-schema []
   (require 'app.spec)
-  (require 'journal.spectool)
-  (let [convert-object (resolve 'journal.spectool/convert-to-object-tuples)
-        app-schema (resolve 'app.spec/app-schema)
-        convert-graphql (resolve 'journal.spectool/convert-to-graphql)]
-    (->> (convert-object app-schema)
-         (convert-graphql)
-         (prn-str)
-         (spit "resources/converted.edn"))))
+  (let [write-function (resolve 'app.spec/write-app-schema)]
+    (write-function)))

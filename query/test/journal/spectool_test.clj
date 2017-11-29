@@ -46,7 +46,10 @@
 
 (def converted (pst/convert-to-object-tuples app-schema))
 
-(def graphql (pst/convert-to-graphql converted))
+(defn type-mapping-func [field]
+  (if (= field '::ID) (symbol "ID") nil))
+
+(def graphql (pst/convert-to-graphql converted type-mapping-func))
 
 (t/deftest verify-object-conversion
   (t/is (= (:objects schema-map) (:objects graphql))))

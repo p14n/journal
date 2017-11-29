@@ -30,14 +30,17 @@
 
 (defn graphql-type [field {refs :refs
                            object-set :object-set
-                           wrapfunc :wrapfunc :as opts}]
-  (cond
-    (contains? object-set field) (wrapfunc (simple-name field))
-    (coll? field) (map #(graphql-type % opts) field)
-    (= field 'clojure.core/string?) (wrapfunc (symbol "String"))
-    (= field 'clojure.spec.alpha/coll-of) (symbol "list")
-    (contains? refs field) (graphql-type (refs field) opts)
-    :default (wrapfunc (simple-name field))))
+                           wrapfunc :wrapfunc
+                           mappingfunc :typemappingfunc :as opts}]
+  (let [mapped (mappingfunc field)]
+    (cond
+      (not (nil? mapped)) mapped
+      (contains? object-set field) (wrapfunc (simple-name field))
+      (coll? field) (map #(graphql-type % opts) field)
+      (= field 'clojure.core/string?) (wrapfunc (symbol "String"))
+      (= field 'clojure.spec.alpha/coll-of) (symbol "list")
+      (contains? refs field) (graphql-type (refs field) opts)
+      :default (wrapfunc (simple-name field)))))
 
 (defn create-field [field {fields-info :fields-info :as opts} ]
   {(simple-name field) (merge (field fields-info)
@@ -46,11 +49,14 @@
 (defn not-null-wrapper [x]
   `(~(symbol "non-null") ~x))
 
-(defn create-lacinia-object [[spec-key spec-converted] object-set]
+(defn create-lacinia-object [[spec-key spec-converted] object-set mappingfunc]
   (let [refs (:ref spec-converted)
         spec-object (:object spec-converted)
         fields-info (get-in spec-converted [:other :fields])
-        opts {:refs refs :fields-info fields-info :object-set object-set}]
+        opts {:refs refs
+              :fields-info fields-info
+              :object-set object-set
+              :typemappingfunc mappingfunc}]
     {(simple-name spec-key)
      (merge (:other spec-converted)
             {:fields
@@ -78,9 +84,9 @@
       :args { (keyword "ID") { :type (symbol "ID")} }
       :resolve (keyword "query" function-name) }}))
 
-(defn convert-to-graphql [refactored-object-tuples ]
+(defn convert-to-graphql [refactored-object-tuples typemappingfunc]
   (let [object-set (set (map first refactored-object-tuples))
-        lacinia-objects (into {} (map #(create-lacinia-object % object-set)
+        lacinia-objects (into {} (map #(create-lacinia-object % object-set typemappingfunc)
                                       refactored-object-tuples))
         lacinia-queries (into {} (map create-lacinia-id-query refactored-object-tuples))]
     {:objects lacinia-objects :queries lacinia-queries}))
