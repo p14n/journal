@@ -11,7 +11,7 @@
    :Group/people (constantly {})})
 
 (defn startapp[]
-  (let [gql-schema (g/graphql-schema-from-edn-file "resources/converted.edn")
+  (let [gql-schema (g/graphql-schema-from-edn-file "resources/converted.edn" resolver-map)
         httpserver (http/start-server gql-schema)]
     {:http httpserver}))
 
