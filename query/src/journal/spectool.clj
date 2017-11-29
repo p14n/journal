@@ -76,17 +76,14 @@
 
 
 (defn create-query-args [fields opts]
-  (let [args-info (:args-info opts)
-        filtered (filter #(contains? args-info %) fields)
-        converted (into {} (map #(create-field % opts) filtered))]
+  (let [converted (into {} (map #(create-field % opts) fields))]
     converted))
 
-(defn create-lacinia-id-query [[spec-key spec-object] object-set mappingfunc]
+(defn create-lacinia-query [[spec-key spec-object] object-set mappingfunc]
   (let [type-name (name spec-key)
         query-name (.toLowerCase type-name)
         opts {:refs (:ref spec-object)
               :fields-info (get-in spec-object [:other :fields])
-              :args-info (get-in spec-object [:other :args])
               :object-set object-set
               :typemappingfunc mappingfunc
               :wrapfunc identity }
@@ -98,9 +95,43 @@
       :args (create-query-args all-fields opts)
       :resolve (keyword "query" query-name) }}))
 
-(defn convert-to-graphql [refactored-object-tuples typemappingfunc]
+(defn to-lacinia-map [object-set typemappingfunc]
+  (fn [lacinia-function refactored-object-tuples]
+    (into {} (map #(lacinia-function % object-set typemappingfunc)
+                  refactored-object-tuples))))
+
+(defn create-lacinia-mutation [[spec-key spec-object] object-set mappingfunc id-field]
+  (let [type-name (name spec-key)
+        opts {:refs (:ref spec-object)
+              :fields-info (get-in spec-object [:other :fields])
+              :object-set object-set
+              :typemappingfunc mappingfunc
+              :wrapfunc identity }
+        add-name (str "add" type-name)
+        change-name (str "change" type-name)
+        req-fields (get-in spec-object [:object :req])
+        opt-fields (get-in spec-object [:object :opt])
+        all-fields (apply conj req-fields opt-fields)]
+    {(keyword add-name)
+     {:type (keyword type-name) :resolve (keyword "mutation" add-name)
+      :args (merge (create-query-args (remove #(= id-field %) req-fields) (assoc opts
+                                                        :wrapfunc not-null-wrapper))
+                   (create-query-args opt-fields opts))}
+     (keyword change-name)
+     {:type (keyword type-name) :resolve (keyword "mutation" change-name)
+      :args (create-query-args all-fields opts)}}))
+
+
+(defn convert-to-graphql [refactored-object-tuples typemappingfunc id-field]
   (let [object-set (set (map first refactored-object-tuples))
-        lacinia-objects (into {} (map #(create-lacinia-object % object-set typemappingfunc)
-                                      refactored-object-tuples))
-        lacinia-queries (into {} (map #(create-lacinia-id-query % object-set typemappingfunc) refactored-object-tuples))]
-    {:objects lacinia-objects :queries lacinia-queries}))
+        lacinia-map-function (to-lacinia-map object-set typemappingfunc)
+        lacinia-objects (lacinia-map-function
+                         create-lacinia-object refactored-object-tuples)
+        lacinia-queries (lacinia-map-function
+                         create-lacinia-query refactored-object-tuples)
+        lacinia-mutations (reduce merge {} (map #(create-lacinia-mutation
+                                          % object-set typemappingfunc id-field)
+                                        refactored-object-tuples))]
+    {:objects lacinia-objects
+     :queries lacinia-queries
+     :mutations lacinia-mutations}))

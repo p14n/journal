@@ -51,10 +51,13 @@
 (defn type-mapping-func [field]
   (if (= field '::ID) (symbol "ID") nil))
 
-(def graphql (pst/convert-to-graphql converted type-mapping-func))
+(def graphql (pst/convert-to-graphql converted type-mapping-func '::ID))
 
 (t/deftest verify-object-conversion
   (t/is (= (:objects schema-map) (:objects graphql))))
 
 (t/deftest verify-query-conversion
   (t/is (= (:queries schema-map) (:queries graphql))))
+
+(t/deftest verify-mutation-conversion
+  (t/is (= (:mutations schema-map) (:mutations graphql))))

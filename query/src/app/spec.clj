@@ -38,7 +38,8 @@
 (defn write-app-schema []
   (let [converted (st/convert-to-object-tuples app-schema)
         tographql (st/convert-to-graphql converted
-                                         type-mapping-function)]
+                                         type-mapping-function
+                                         '::ID)]
     (->> tographql
          (prn-str)
          (spit "./resources/converted.edn"))))
