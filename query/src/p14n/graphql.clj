@@ -19,7 +19,7 @@
 
 (def graphql-schema
   (-> schema-from-file
-      (attach-resolvers {:query/Person-by-id (constantly {})
+      (attach-resolvers {:query/Person-by-id #(do {:email "hi"})
                          :query/Group-by-id (constantly {})
                          :Person/groups (constantly {})
                          :Group/people (constantly {})})

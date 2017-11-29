@@ -11,7 +11,7 @@
                   [com.walmartlabs/lacinia "0.18.0" :exclusions [clojure-future-spec]]
                   [mount "0.1.10"]
                   [org.clojure/data.json "0.2.6"]
-
+                  [ring/ring-json "0.4.0"]
 
                   ;;Dev
                   [metosin/spec-tools "0.5.1"               :scope "provided"]
@@ -23,7 +23,8 @@
 
 (require '[tolitius.boot-check :as check]
          '[adzerk.boot-test :as bt]
-         '[clojure.tools.namespace.repl :refer [set-refresh-dirs refresh] :as tn])
+         '[clojure.tools.namespace.repl :refer [set-refresh-dirs refresh] :as tn]
+         '[mount.core :refer [start stop]])
 
 (deftask watch-test
   "Runs tests"
@@ -55,10 +56,8 @@
   (load-data-readers!)
 
   (require 'p14n.main)
-  ;;(use 'job.config)
-  ;(eval '(reset! is-dev true))
   (in-ns 'p14n.main))
 
-;; (deftask reset []
-;;   (stop)
-;;   (tn/refresh :after 'mount.core/start))
+(deftask reset []
+   (stop)
+   (tn/refresh :after 'mount.core/start))
