@@ -12,6 +12,9 @@
          (swap! specs assoc spec (spec/form s))
          @specs)))))
 
+(defn simple-name [namespaced-key]
+  (keyword (name namespaced-key)))
+
 (defn refactor-spec-output [spec-key output]
   (into {:ref output :def spec-key}
         (map vec (partition 2 (drop 1 (spec-key output))))))
@@ -28,17 +31,17 @@
 
 (defn graphql-type [refs field object-set wrapfunc]
   (cond
-    (contains? object-set field) (wrapfunc field)
+    (contains? object-set field) (wrapfunc (simple-name field))
     (coll? field) (map #(graphql-type refs % object-set wrapfunc) field)
     (= field :p14n.spec/ID) (symbol "ID")
     (= field 'clojure.core/string?) (wrapfunc (symbol "String"))
     (= field 'clojure.spec.alpha/coll-of) (symbol "list")
     (contains? refs field) (graphql-type refs (refs field) object-set wrapfunc)
-    :default (wrapfunc field)))
+    :default (wrapfunc (simple-name field))))
 
 (defn create-field [refs field object-set wrapfunc fields-info]
-  {field (merge (field fields-info)
-                {:type (graphql-type refs field object-set wrapfunc)})})
+  {(simple-name field) (merge (field fields-info)
+                              {:type (graphql-type refs field object-set wrapfunc)})})
 
 (defn not-null-wrapper [x]
   `(~(symbol "non-null") ~x))
@@ -47,7 +50,7 @@
   (let [refs (:ref spec-converted)
         spec-object (:object spec-converted)
         fields-info (get-in spec-converted [:other :fields])]
-    {(:def spec-object)
+    {(simple-name spec-key)
      (merge (:other spec-converted)
             {:fields (apply merge
                             (apply conj
@@ -64,9 +67,9 @@
         query-name (str type-name "_by_id")
         function-name (str type-name "-by-id")]
     {(keyword query-name)
-     { :type spec-key
+     { :type (simple-name spec-key)
       :description (str "Access a " type-name " by ID, if it exists")
-      :args { (symbol "ID") { :type (symbol "ID")} }
+      :args { (keyword "ID") { :type (symbol "ID")} }
       :resolve (keyword "query" function-name) }}))
 
 (defn convert-to-graphql [refactored-object-tuples ]

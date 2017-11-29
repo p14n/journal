@@ -30,10 +30,10 @@
     (spit "resources/converted.edn"))
 
 (t/deftest verify-object-conversion
-  (t/is (= (:objects schema-map) (:objects actual-schema))))
+  (t/is (= (:objects schema-map) (:objects graphql))))
 
 (t/deftest verify-query-conversion
-  (t/is (= (:queries schema-map) (:queries actual-schema))))
+  (t/is (= (:queries schema-map) (:queries graphql))))
 
 
 (clojure.pprint/pprint (execute g/graphql-schema "{ query { Person_by_id(iden: 1) { email } } }" nil nil))
