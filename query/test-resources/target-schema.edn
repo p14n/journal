@@ -1,33 +1,33 @@
 {:objects
- {:p14n.spec/Person
+ {:Person
   {:description "A person in the system"
    :fields
-   {:p14n.spec/ID {:type ID}
-    :p14n.spec/firstname {:type String}
-    :p14n.spec/lastname {:type String}
-    :p14n.spec/groups {:type (list :p14n.spec/Group)
+   {:ID {:type ID}
+    :firstname {:type String}
+    :lastname {:type String}
+    :groups {:type (list :Group)
              :description "Groups this person belongs to"
              :resolve :Person/groups}
-    :p14n.spec/email {:type (non-null String)}}}
+    :email {:type (non-null String)}}}
 
-  :p14n.spec/Group
+  :Group
   {:description "A group of people"
    :fields
-   {:p14n.spec/ID {:type ID}
-    :p14n.spec/name {:type (non-null String)}
-    :p14n.spec/people {:type (list :p14n.spec/Person)
+   {:ID {:type ID}
+    :name {:type (non-null String)}
+    :people {:type (list :Person)
                        :description "People in this group"
                        :resolve :Group/people}}}}
 
  :queries
  {:Person_by_id
-  {:type :p14n.spec/Person
+  {:type :Person
    :description "Access a Person by ID, if it exists"
-   :args {ID {:type ID}}
+   :args {:ID {:type ID}}
    :resolve :query/Person-by-id}
 
   :Group_by_id
-  {:type :p14n.spec/Group
+  {:type :Group
    :description "Access a Group by ID, if it exists"
-   :args {ID {:type ID}}
+   :args {:ID {:type ID}}
    :resolve :query/Group-by-id}}}

@@ -55,9 +55,20 @@
   (apply tn/set-refresh-dirs (get-env :directories))
   (load-data-readers!)
 
-  (require 'p14n.main)
-  (in-ns 'p14n.main))
+  (require 'app.main)
+  (in-ns 'app.main))
 
 (deftask reset []
    (stop)
-   (tn/refresh :after 'mount.core/start))
+  (tn/refresh :after 'mount.core/start))
+
+(deftask write-schema []
+  (require 'app.spec)
+  (require 'journal.spectool)
+  (let [convert-object (resolve 'journal.spectool/convert-to-object-tuples)
+        app-schema (resolve 'app.spec/app-schema)
+        convert-graphql (resolve 'journal.spectool/convert-to-graphql)]
+    (->> (convert-object app-schema)
+         (convert-graphql)
+         (prn-str)
+         (spit "resources/converted.edn"))))

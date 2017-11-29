@@ -1,7 +1,6 @@
-(ns p14n.spectool
+(ns journal.spectool
   (:require [clojure.spec.alpha :as spec]
-            [spec-tools.visitor :as visitor]
-            [p14n.spec :as ps]))
+            [spec-tools.visitor :as visitor]))
 
 (defn convert-spec-object [so]
   (let [specs (atom {})]
@@ -29,19 +28,20 @@
                            :other (second object-tuple)}]))
 
 
-(defn graphql-type [refs field object-set wrapfunc]
+(defn graphql-type [field {refs :refs
+                           object-set :object-set
+                           wrapfunc :wrapfunc :as opts}]
   (cond
     (contains? object-set field) (wrapfunc (simple-name field))
-    (coll? field) (map #(graphql-type refs % object-set wrapfunc) field)
-    (= field :p14n.spec/ID) (symbol "ID")
+    (coll? field) (map #(graphql-type % opts) field)
     (= field 'clojure.core/string?) (wrapfunc (symbol "String"))
     (= field 'clojure.spec.alpha/coll-of) (symbol "list")
-    (contains? refs field) (graphql-type refs (refs field) object-set wrapfunc)
+    (contains? refs field) (graphql-type (refs field) opts)
     :default (wrapfunc (simple-name field))))
 
-(defn create-field [refs field object-set wrapfunc fields-info]
+(defn create-field [field {fields-info :fields-info :as opts} ]
   {(simple-name field) (merge (field fields-info)
-                              {:type (graphql-type refs field object-set wrapfunc)})})
+                              {:type (graphql-type field opts)})})
 
 (defn not-null-wrapper [x]
   `(~(symbol "non-null") ~x))
@@ -49,13 +49,19 @@
 (defn create-lacinia-object [[spec-key spec-converted] object-set]
   (let [refs (:ref spec-converted)
         spec-object (:object spec-converted)
-        fields-info (get-in spec-converted [:other :fields])]
+        fields-info (get-in spec-converted [:other :fields])
+        opts {:refs refs :fields-info fields-info :object-set object-set}]
     {(simple-name spec-key)
      (merge (:other spec-converted)
-            {:fields (apply merge
-                            (apply conj
-                                   (map #(create-field refs % object-set not-null-wrapper fields-info) (:req spec-object))
-                                   (map #(create-field refs % object-set identity fields-info) (:opt spec-object))))})}))
+            {:fields
+             (apply merge
+                    (apply conj
+                           (map
+                            #(create-field % (assoc opts :wrapfunc not-null-wrapper))
+                            (:req spec-object))
+                           (map
+                            #(create-field % (assoc opts :wrapfunc identity))
+                            (:opt spec-object))))})}))
 
 
 (defn convert-to-object-tuples [app-schema]

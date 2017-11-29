@@ -1,4 +1,4 @@
-(ns p14n.spec
+(ns app.spec
   (:require [clojure.spec.alpha :as spec]))
 
 (spec/def ::firstname string?)

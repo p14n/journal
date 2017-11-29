@@ -1,8 +1,6 @@
-(ns p14n.graphql
+(ns journal.graphql
   (:require  [clojure.java.io :as io]
              [clojure.edn :as edn]
-             [p14n.spec :as ps]
-             [p14n.spectool :as pst]
              [com.walmartlabs.lacinia.util :refer [attach-resolvers]]
              [com.walmartlabs.lacinia.schema :as schema]
              [com.walmartlabs.lacinia :refer [execute]]))
@@ -13,14 +11,11 @@
     (let [edn-seq (repeatedly (partial edn/read {:eof :theend} in))]
       (apply str (take-while (partial not= :theend) edn-seq)))))
 
-(def schema-from-file
+(defn schema-from-file [file]
   (read-string
-   (read-edn-from-file "resources/converted.edn")))
+   (read-edn-from-file file)))
 
-(def graphql-schema
-  (-> schema-from-file
-      (attach-resolvers {:query/Person-by-id (fn [a b c] (do{:email "hi"}))
-                         :query/Group-by-id (constantly {})
-                         :Person/groups (constantly {})
-                         :Group/people (constantly {})})
+(defn graphql-schema-from-edn-file[file resolver-map]
+  (-> (schema-from-file file)
+      (attach-resolvers resolver-map)
       schema/compile))
