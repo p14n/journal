@@ -5,8 +5,12 @@
 
 
 (def resolver-map
-  {:query/person (fn [a b c] (do{:email "hi"}))
-   :query/group (fn [a b c] (do{:name "hi"}))})
+  {:query/person (fn [a b c] (do{:email "dean@p14n.com"}))
+   :query/group (fn [a b c] (do{:name "Group 1"}))
+   :mutation/addPerson (fn [a b c] (do{:email "added"}))
+   :mutation/addGroup (fn [a b c] (do{:name "added"}))
+   :mutation/changePerson (fn [a b c] (do{:email "changed"}))
+   :mutation/changeGroup (fn [a b c] (do{:name "changed"}))})
 
 (defn startapp[]
   (let [gql-schema (g/graphql-schema-from-edn-file "resources/converted.edn" resolver-map)

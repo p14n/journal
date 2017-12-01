@@ -26,9 +26,6 @@
    :args {:ID {:type ID}
           :firstname {:type String}
           :lastname {:type String}
-          :groups {:type (list :Group)
-                   :description "Groups this person belongs to"
-                   :resolve :Person/groups}
           :email {:type String}}
    :resolve :query/person}
 
@@ -36,10 +33,7 @@
   {:type :Group
    :description "Access a Group"
    :args {:name { :type String }
-          :ID {:type ID}
-          :people {:type (list :Person)
-                   :description "People in this group"
-                   :resolve :Group/people}}
+          :ID {:type ID}}
    :resolve :query/group}}
  :mutations
  {
@@ -47,9 +41,6 @@
   {:args
    {:firstname {:type String}
     :lastname {:type String}
-    :groups {:type (list :Group)
-             :description "Groups this person belongs to"
-             :resolve :Person/groups}
     :email {:type (non-null String)}}
    :resolve :mutation/addPerson
    :type :Person}
@@ -58,27 +49,15 @@
    {:ID {:type ID}
     :firstname {:type String}
     :lastname {:type String}
-    :groups {:type (list :Group)
-             :description "Groups this person belongs to"
-             :resolve :Person/groups}
     :email {:type String}}
    :resolve :mutation/changePerson
    :type :Person}
   :addGroup
-  {:args {:name {:type (non-null String)}
-         :people {:type (list :Person)
-                  :description "People in this group"
-                  :resolve :Group/people}}
+  {:args {:name {:type (non-null String)}}
    :resolve :mutation/addGroup
    :type :Group}
   :changeGroup
   {:args {:name { :type String }
-          :ID {:type ID}
-          :people {:type (list :Person)
-                   :description "People in this group"
-                   :resolve :Group/people}}
+          :ID {:type ID}}
    :resolve :mutation/changeGroup
-   :type :Group}
-
-  }
-}
+   :type :Group}}}

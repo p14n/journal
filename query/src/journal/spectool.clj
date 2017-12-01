@@ -74,10 +74,14 @@
   (map convert-spec-object-tuple-to-data
        (:objects app-schema)))
 
+(defn list-field-type? [t]
+  (and (coll? t)
+       (= (first t) (symbol "list"))))
 
 (defn create-query-args [fields opts]
-  (let [converted (into {} (map #(create-field % opts) fields))]
-    converted))
+  (let [field-maps (map #(create-field % opts) fields)
+        single-only (remove #(list-field-type? (-> % vals first :type)) field-maps)]
+    (into {} single-only)))
 
 (defn create-lacinia-query [[spec-key spec-object] object-set mappingfunc]
   (let [type-name (name spec-key)
