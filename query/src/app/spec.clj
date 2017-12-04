@@ -1,6 +1,6 @@
 (ns app.spec
   (:require [clojure.spec.alpha :as spec]
-            [journal.spectool :as st]))
+            [journal.spectool.core :as st]))
 
 (spec/def ::firstname string?)
 (spec/def ::lastname string?)

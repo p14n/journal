@@ -1,4 +1,4 @@
-(ns journal.spectool-shared
+(ns journal.spectool.shared
   (:require [clojure.spec.alpha :as spec]
             [spec-tools.visitor :as visitor]))
 

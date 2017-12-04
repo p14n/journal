@@ -2,7 +2,7 @@
   (:require  [clojure.test :as t]
              [clojure.java.io :as io]
              [clojure.edn :as edn]
-             [journal.spectool :as pst]
+             [journal.spectool.core :as pst]
              [journal.graphql :as g]
              [clojure.spec.alpha :as spec]
              [com.walmartlabs.lacinia.util :refer [attach-resolvers]]
@@ -49,11 +49,11 @@
 
 (def converted (pst/convert-to-object-tuples app-schema))
 
-(pprint converted)
+;;(pprint converted)
 
 (def datomic-schema (pst/create-datomic-schema converted))
 
-(first datomic-schema)
+;;(first datomic-schema)
 
 (defn type-mapping-func [field]
   (if (= field '::ID) (symbol "ID") nil))

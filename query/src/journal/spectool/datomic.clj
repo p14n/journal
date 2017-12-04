@@ -1,5 +1,5 @@
-(ns journal.spectool-datomic
-  (:use [journal.spectool-shared]
+(ns journal.spectool.datomic
+  (:use [journal.spectool.shared]
         [datomic.api :only [q db] :as d]
         [clojure.string :only [join]]))
 

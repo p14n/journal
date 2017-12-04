@@ -1,5 +1,5 @@
-(ns journal.spectool-graphql
-  (:use [journal.spectool-shared]))
+(ns journal.spectool.graphql
+  (:use [journal.spectool.shared]))
 
 (defn graphql-type [field {refs :refs
                            object-set :object-set
