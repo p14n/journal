@@ -19,19 +19,28 @@
                   [org.clojure/tools.nrepl "0.2.12"         :scope "provided"]
                   [boot/core              "2.7.2"           :scope "provided"]
                   [adzerk/boot-test "1.0.7"                 :scope "test"]
+                  [metosin/boot-alt-test "0.3.2"            :scope "test"]
                   [tolitius/boot-check    "0.1.2"           :scope "test"]])
 
 (require '[tolitius.boot-check :as check]
          '[adzerk.boot-test :as bt]
          '[clojure.tools.namespace.repl :refer [set-refresh-dirs refresh] :as tn]
-         '[mount.core :refer [start stop]])
+         '[mount.core :refer [start stop]]
+         '[metosin.boot-alt-test :refer (alt-test)])
 
 (deftask watch-test
   "Runs tests"
   []
   (set-env! :source-paths #{"src" "test"}
             :resource-paths #{"resources" "test-resources"})
-  (comp (watch) (bt/test)))
+  (comp (watch) (alt-test)))
+
+;; (deftask watch-test
+;;   "Runs tests"
+;;   []
+;;   (set-env! :source-paths #{"src" "test"}
+;;             :resource-paths #{"resources" "test-resources"})
+;;   (comp (watch) (bt/test)))
 
 (deftask check-sources []
   (set-env! :source-paths #{"src" "test"})

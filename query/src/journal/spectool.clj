@@ -7,4 +7,5 @@
 
 (def convert-to-graphql sg/convert-to-graphql)
 (def convert-to-object-tuples ss/convert-to-object-tuples)
-(def create-datomic-schema sd/create-datomic-schema )
+(def write-datomic-schema-files sd/write-datomic-schema-files)
+

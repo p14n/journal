@@ -35,13 +35,16 @@
                       :fields { ::people {:description "People in this group"}}}}
    :queries [::Person ::Group]})
 
+
 (defn write-app-schema []
   (let [converted (st/convert-to-object-tuples app-schema)
         tographql (st/convert-to-graphql converted
                                          type-mapping-function
                                          '::ID)]
-    (->> tographql
-         (prn-str)
-         (spit "./resources/converted.edn"))))
+    (do
+      (st/write-datomic-schema-files converted "./resources/datomic/")
+      (->> tographql
+             (prn-str)
+             (spit "./resources/graphql.edn")))))
 
 
