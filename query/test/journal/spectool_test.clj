@@ -7,7 +7,8 @@
              [clojure.spec.alpha :as spec]
              [com.walmartlabs.lacinia.util :refer [attach-resolvers]]
              [com.walmartlabs.lacinia.schema :as schema]
-             [com.walmartlabs.lacinia :refer [execute]]))
+             [com.walmartlabs.lacinia :refer [execute]]
+             [clojure.pprint :refer [pprint]]))
 
 (spec/def ::firstname string?)
 (spec/def ::lastname string?)
@@ -47,6 +48,12 @@
    (g/read-edn-from-file "test-resources/target-schema.edn")))
 
 (def converted (pst/convert-to-object-tuples app-schema))
+
+(pprint converted)
+
+(def datomic-schema (pst/create-datomic-schema converted))
+
+(first datomic-schema)
 
 (defn type-mapping-func [field]
   (if (= field '::ID) (symbol "ID") nil))

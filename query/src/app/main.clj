@@ -1,11 +1,12 @@
 (ns app.main
   (:require [mount.core :refer [defstate start stop]]
             [journal.http :as http]
-            [journal.graphql :as g]))
+            [journal.graphql :as g]
+            [com.walmartlabs.lacinia.executor :as executor]))
 
 
 (def resolver-map
-  {:query/person (fn [a b c] (do{:email "dean@p14n.com"}))
+  {:query/person (fn [a b c] (do (println (executor/selections-tree a)) {:email "dean@p14n.com"}))
    :query/group (fn [a b c] (do{:name "Group 1"}))
    :mutation/addPerson (fn [a b c] (do{:email "added"}))
    :mutation/addGroup (fn [a b c] (do{:name "added"}))
@@ -20,8 +21,9 @@
 (defn stopapp [{server :http}]
   (server :timeout 100))
 
-(defstate app-state :start (startapp)
-  :stop (stopapp :timeout 100))
+(defstate app-state
+  :start (startapp)
+  :stop (stopapp))
 
 (defn -main [& args]
   (start))
