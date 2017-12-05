@@ -4,6 +4,13 @@
 
 (deftest transaction-creation
   (testing "Check transaction data is correctly created"
-    (is (= (sut/toTxData "Person" {:email "dean@p14n.com"})
-           { :Person/email "dean@p14n.com" }))))
+    (is (= { :Person/email "dean@p14n.com" }
+           (sut/to-tx-data "Person" {:email "dean@p14n.com"})))))
 
+(deftest query-creation
+  (testing "Check selection tree coverts to pull query"
+    (is (= [:Person/email :Person/firstname {:Person/groups [:Group/name]}]
+           (sut/to-query {:Person/email nil,
+                          :Person/firstname nil,
+                          :Person/groups
+                          {:selections {:Group/name nil}}})))))
