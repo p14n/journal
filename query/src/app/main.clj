@@ -2,21 +2,24 @@
   (:require [mount.core :refer [defstate start stop]]
             [journal.http :as http]
             [journal.graphql :as g]
-            [journal.database :refer [conn install-base-schema]]
+            [journal.database :refer [conn install-base-schema mutate-function]]
+            [clojure.pprint :refer [pprint]]
             [com.walmartlabs.lacinia.executor :as executor]))
 
 
-(def resolver-map
+
+(defn resolver-map []
   {:query/person (fn [a b c] (do (println (executor/selections-tree a)) {:email "dean@p14n.com"}))
    :query/group (fn [a b c] (do{:name "Group 1"}))
-   :mutation/addPerson (fn [a b c] (do{:email "added"}))
-   :mutation/addGroup (fn [a b c] (do{:name "added"}))
-   :mutation/changePerson (fn [a b c] (do{:email "changed"}))
-   :mutation/changeGroup (fn [a b c] (do{:name "changed"}))})
+   :mutation/addPerson (mutate-function "Person" conn)
+   :mutation/addGroup (mutate-function "Group" conn)
+   :mutation/changePerson (mutate-function "Person" conn)
+   :mutation/changeGroup (mutate-function "Group" conn)})
 
 (defn startapp[]
   (let [db-install (install-base-schema conn)
-        gql-schema (g/graphql-schema-from-edn-file "resources/graphql.edn" resolver-map)
+        x (println db-install)
+        gql-schema (g/graphql-schema-from-edn-file "resources/graphql.edn" (resolver-map))
         httpserver (http/start-server gql-schema)]
     {:http httpserver}))
 
