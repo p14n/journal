@@ -20,7 +20,7 @@
 (defn is-many [field]
   (and
    (coll? field)
-   (contains? field 'clojure.spec.alpha/coll-of)))
+   (contains? (set field) 'clojure.spec.alpha/coll-of)))
 
 (defn create-datomic-field[ns name ismany type]
   {
@@ -38,7 +38,7 @@
         ref (:ref schema-object)]
     {object-name (map #(create-datomic-field object-name
                                               (name %)
-                                              (is-many %)
+                                              (is-many (ref %))
                                               (datomic-type (ref %) object-set)) fields)}))
 
 (defn create-datomic-schema [object-tuples]

@@ -3,5 +3,5 @@
 { :db/id #db/id[:db.part/db]  :db/ident :Person/ID  :db/cardinality :db.cardinality/one  :db/valueType :db.type/long  :db.install/_attribute :db.part/db }
 { :db/id #db/id[:db.part/db]  :db/ident :Person/firstname  :db/cardinality :db.cardinality/one  :db/valueType :db.type/string  :db.install/_attribute :db.part/db }
 { :db/id #db/id[:db.part/db]  :db/ident :Person/lastname  :db/cardinality :db.cardinality/one  :db/valueType :db.type/string  :db.install/_attribute :db.part/db }
-{ :db/id #db/id[:db.part/db]  :db/ident :Person/groups  :db/cardinality :db.cardinality/one  :db/valueType :db.type/ref  :db.install/_attribute :db.part/db }
+{ :db/id #db/id[:db.part/db]  :db/ident :Person/groups  :db/cardinality :db.cardinality/many  :db/valueType :db.type/ref  :db.install/_attribute :db.part/db }
 ]

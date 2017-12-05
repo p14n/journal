@@ -1,14 +1,15 @@
 (ns journal.spectool-test
-  (:require  [clojure.test :as t]
-             [clojure.java.io :as io]
+  (:require  [clojure.java.io :as io]
              [clojure.edn :as edn]
              [journal.spectool.core :as pst]
+             [journal.spectool.datomic :as dst]
              [journal.graphql :as g]
              [clojure.spec.alpha :as spec]
              [com.walmartlabs.lacinia.util :refer [attach-resolvers]]
              [com.walmartlabs.lacinia.schema :as schema]
              [com.walmartlabs.lacinia :refer [execute]]
-             [clojure.pprint :refer [pprint]]))
+             [clojure.pprint :refer [pprint]])
+  (:use [clojure.test]))
 
 (spec/def ::firstname string?)
 (spec/def ::lastname string?)
@@ -53,18 +54,29 @@
 
 (def datomic-schema (pst/create-datomic-schema converted))
 
-;;(first datomic-schema)
+(pprint datomic-schema)
 
 (defn type-mapping-func [field]
   (if (= field '::ID) (symbol "ID") nil))
 
 (def graphql (pst/convert-to-graphql converted type-mapping-func '::ID))
 
-(t/deftest verify-object-conversion
-  (t/is (= (:objects schema-map) (:objects graphql))))
+(deftest graphql-conversion
+  (testing "Graphql conversion"
+    (testing "to objects"
+      (is (= (:objects schema-map) (:objects graphql))))
+    (testing "to queries"
+      (is (= (:queries schema-map) (:queries graphql))))
+    (testing "to mutations"
+      (is (= (:mutations schema-map) (:mutations graphql))))))
 
-(t/deftest verify-query-conversion
-  (t/is (= (:queries schema-map) (:queries graphql))))
+(deftest datomic-conversion
+  (testing "Datomic conversion"
+    (testing "identifies many relationships"
+      (is (dst/is-many '(::Group clojure.spec.alpha/coll-of))))
+    (testing "contains Person and Group"
+      (do (is (= "Person" (first (keys datomic-schema))))
+          (is (= "Group" (second (keys datomic-schema))))))))
 
-(t/deftest verify-mutation-conversion
-  (t/is (= (:mutations schema-map) (:mutations graphql))))
+
+
