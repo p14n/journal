@@ -35,13 +35,6 @@
             :resource-paths #{"resources" "test-resources"})
   (comp (watch) (alt-test)))
 
-;; (deftask watch-test
-;;   "Runs tests"
-;;   []
-;;   (set-env! :source-paths #{"src" "test"}
-;;             :resource-paths #{"resources" "test-resources"})
-;;   (comp (watch) (bt/test)))
-
 (deftask check-sources []
   (set-env! :source-paths #{"src" "test"})
   (comp
@@ -68,7 +61,7 @@
   (in-ns 'app.main))
 
 (deftask reset []
-   (stop)
+  (stop)
   (tn/refresh :after 'mount.core/start))
 
 (deftask write-schema []

@@ -2,6 +2,7 @@
   (:require [mount.core :refer [defstate start stop]]
             [journal.http :as http]
             [journal.graphql :as g]
+            [journal.database :refer [conn install-base-schema]]
             [com.walmartlabs.lacinia.executor :as executor]))
 
 
@@ -14,7 +15,8 @@
    :mutation/changeGroup (fn [a b c] (do{:name "changed"}))})
 
 (defn startapp[]
-  (let [gql-schema (g/graphql-schema-from-edn-file "resources/converted.edn" resolver-map)
+  (let [db-install (install-base-schema conn)
+        gql-schema (g/graphql-schema-from-edn-file "resources/graphql.edn" resolver-map)
         httpserver (http/start-server gql-schema)]
     {:http httpserver}))
 
@@ -23,7 +25,7 @@
 
 (defstate app-state
   :start (startapp)
-  :stop (stopapp))
+  :stop (stopapp app-state))
 
 (defn -main [& args]
   (start))
