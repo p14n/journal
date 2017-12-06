@@ -1,6 +1,10 @@
 (ns app.spec
   (:require [clojure.spec.alpha :as spec]
-            [journal.spectool.core :as st]))
+            [journal.spectool.core :as st]
+            [com.walmartlabs.lacinia.executor :as executor]
+            [journal.database :refer [conn
+                                      mutate-function
+                                      query-from-selection]]))
 
 (spec/def ::firstname string?)
 (spec/def ::lastname string?)
@@ -22,9 +26,6 @@
    :req [::name ::ID]
    :opt [::people]))
 
-(defn type-mapping-function[field]
-  (if (= field ::ID) (symbol "ID") nil))
-
 (def app-schema
   {:objects {::Person {:description "A person in the system"
                        :args #{::email ::ID}
@@ -34,6 +35,24 @@
                       :args #{::name ::ID}
                       :fields { ::people {:description "People in this group"}}}}
    :queries [::Person ::Group]})
+
+(defn is-id?[field] (= (name field) "ID"))
+
+(defn type-mapping-function[field]
+  (if (= field ::ID) (symbol "ID") nil))
+
+(defn query-function []
+  (fn [ctx args val]
+    (try (query-from-selection (executor/selections-tree ctx) is-id?)
+         (catch Exception e (do (.printStackTrace e) (throw e))))))
+
+(defn resolver-map []
+  {:query/person (query-function)
+   :query/group (query-function)
+   :mutation/addPerson (mutate-function "Person" conn)
+   :mutation/addGroup (mutate-function "Group" conn)
+   :mutation/changePerson (mutate-function "Person" conn)
+   :mutation/changeGroup (mutate-function "Group" conn)})
 
 
 (defn write-app-schema []

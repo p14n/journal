@@ -30,54 +30,78 @@
                   (do [(keyword object-name (name k))
                        v])) args )))
 
-(defn to-query [selection-tree]
+(defn to-query [selection-tree is-id?]
   (vec (map (fn [[k v]]
               (cond
+                (is-id? k) :db/id
                 (nil? v) [k :as (keyword (name k))]
-                (contains? v :selections) { k (to-query (:selections v))}
+                (contains? v :selections) { k (to-query (:selections v) is-id?)}
                 :default nil)) selection-tree)))
 
-(defn pull-query [db pattern lookup]
+(defn replace-id-in-result [res is-id?]
+  (if (map? res)
+    (into {}
+          (map
+           (fn [[k v]]
+             [(if (is-id? k) :ID k) (replace-id-in-result v is-id?)]) res))
+    res))
+
+(defn replace-id-in-results [res is-id?]
+  (map #(replace-id-in-result % is-id?) res))
+
+(defn run-query [db pattern lookup]
   (println pattern)
-  (def res (d/q pattern db lookup))
-  (clojure.pprint/pprint res)
-  (first res))
-;;[:find (pull ?e [:user/firstname,:user/lastname,:user/email,:db/id]) :where [?e :user/email]]
-;;[:find (pull ?e [:Person/email {:Person/groups [:Group/name]}]) :where [?e :user/email]]
+  (let [res (first (d/q pattern db lookup))
+        x (println res)] res))
 
 (defn query-from-selection
-  ([selection-tree db]
-   (let [pattern (to-query selection-tree)]
-     (pull-query db `[:find (~(symbol "pull") ?e# ~pattern) :where [?e# :Person/email]] nil)))
+  ([selection-tree is-id? db]
+   (let [pattern (to-query selection-tree is-id?)
+         res (run-query db `[:find (~(symbol "pull") ?e# ~pattern) :where [?e# :Person/email]] nil)
+         replaced (replace-id-in-results res #(= :db/id %))
+         x (println replaced)]
+     replaced
+     ))
 
-  ([selection-tree]
-   (query-from-selection selection-tree (d/db conn))))
+  ([selection-tree is-id?]
+   (query-from-selection selection-tree is-id? (d/db conn))))
 
 (defn create-entity
   "Takes transaction data and returns the resolved tempid"
   [con tx-data]
-  (try
-    (let [had-id (contains? tx-data :db/id)
-          data-with-id (if had-id
-                         tx-data
-                         (assoc tx-data :db/id #db/id[:db.part/user -1000001]))
-          data-as-vec (vec (flatten (vec data-with-id)))
-          xxx (println data-with-id)
-          tx @(d/transact con [data-with-id])]
-      (if had-id (assoc tx :db/id (tx-data :db/id))
-          (assoc tx :db/id (d/resolve-tempid (d/db con) (:tempids tx)
-                                             (d/tempid :db.part/user -1000001)))))
-    (catch Exception e (do (.printStackTrace e) (throw e)))))
+  (let [had-id (contains? tx-data :db/id)
+        data-with-id (if had-id
+                       tx-data
+                       (assoc tx-data :db/id #db/id[:db.part/user -1000001]))
+        data-as-vec (vec (flatten (vec data-with-id)))
+        ;;xxx (println data-with-id)
+        tx @(d/transact con [data-with-id])]
+    (if had-id (assoc tx :ID (tx-data :db/id))
+        (assoc tx :ID (d/resolve-tempid (d/db con) (:tempids tx)
+                                        (d/tempid :db.part/user -1000001))))))
 
 (defn resolve-entity "Takes a db id and db and returns the entity"
-  [db id] (into {:db/id id} (d/touch (d/entity db id))))
+  [db id] (into {:ID id :db/id id} (d/touch (d/entity db id))))
+
+(defn keyname-only [m]
+              (into {}
+                    (map (fn [[k v]]
+                           (cond
+                             (map? v) [(keyword (name k)) (keyname-only v)]
+                             :default [(keyword (name k)) v]))) m))
 
 (defn mutate-function [object-name conn]
   (fn [ctx args val]
-    (->> args
-         (to-tx-data object-name)
-         (#(do (println %) %))
-         (#(do (println "mutate") %))
-         (create-entity conn)
-         (#(resolve-entity (:db-after %) (:db/id %)))
-         (#(do (println %) %)))))
+    (try (->> args
+              (to-tx-data object-name)
+;;              (#(do (println %) %))
+  ;;            (#(do (println "mutate") %))
+              (create-entity conn)
+              (#(do (println (str "xxxjhfskjhsjkdhf" %)) %))
+              (#(resolve-entity (:db-after %) (:ID %)))
+              (#(do (println %) %))
+              (keyname-only)
+
+              (#(do (println (str "WAT" %)) %))
+              )
+         (catch Exception e (do (.printStackTrace e) (throw e))))))

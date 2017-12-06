@@ -9,13 +9,14 @@
 (defn gql-handler [gql-schema]
   (fn [request]
     (println (str "request:" request))
-    {:status 200
-     :headers {"Content-Type" "application/json"}
-     :body (let [query (get-in request [:body :query])
-                 vars (get-in request [:body :variables])
-                 x (do (println vars))
-                 result (execute gql-schema query vars vars)]
-             (json/write-str result))}))
+    (try {:status 200
+          :headers {"Content-Type" "application/json"}
+          :body (let [query (get-in request [:body :query])
+                      vars (get-in request [:body :variables])
+                      x (do (println vars))
+                      result (execute gql-schema query vars vars)]
+                  (json/write-str result))}
+         (catch Exception e (do (.printStackTrace e) (throw e))))))
 
 (defn start-server [gql-schema]
   (let [gh (gql-handler gql-schema)]
