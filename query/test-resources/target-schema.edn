@@ -21,7 +21,7 @@
 
  :queries
  {:person
-  {:type :Person
+  {:type (list :Person)
    :description "Access a Person"
    :args {:ID {:type ID}
           :firstname {:type String}
@@ -30,7 +30,7 @@
    :resolve :query/person}
 
   :group
-  {:type :Group
+  {:type (list :Group)
    :description "Access a Group"
    :args {:name { :type String }
           :ID {:type ID}}

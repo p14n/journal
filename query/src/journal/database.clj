@@ -33,7 +33,7 @@
 (defn to-query [selection-tree]
   (vec (map (fn [[k v]]
               (cond
-                (nil? v) [k :as (name k)]
+                (nil? v) [k :as (keyword (name k))]
                 (contains? v :selections) { k (to-query (:selections v))}
                 :default nil)) selection-tree)))
 

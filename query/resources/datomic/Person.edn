@@ -1,10 +1,5 @@
 [
- { :db/id #db/id[:db.part/db]
-  :db/ident :Person/email
-  :db/cardinality :db.cardinality/one
-  :db/valueType :db.type/string
-  :db/unique             :db.unique/identity
-  :db.install/_attribute :db.part/db }
+{ :db/id #db/id[:db.part/db]  :db/ident :Person/email  :db/cardinality :db.cardinality/one  :db/valueType :db.type/string  :db.install/_attribute :db.part/db }
 { :db/id #db/id[:db.part/db]  :db/ident :Person/ID  :db/cardinality :db.cardinality/one  :db/valueType :db.type/long  :db.install/_attribute :db.part/db }
 { :db/id #db/id[:db.part/db]  :db/ident :Person/firstname  :db/cardinality :db.cardinality/one  :db/valueType :db.type/string  :db.install/_attribute :db.part/db }
 { :db/id #db/id[:db.part/db]  :db/ident :Person/lastname  :db/cardinality :db.cardinality/one  :db/valueType :db.type/string  :db.install/_attribute :db.part/db }

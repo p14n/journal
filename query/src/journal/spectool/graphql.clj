@@ -62,7 +62,7 @@
         all-fields (apply conj (get-in spec-object [:object :req])
                           (get-in spec-object [:object :opt]))]
     {(keyword query-name)
-     {:type (simple-name spec-key)
+     {:type `(~(symbol "list") ~(simple-name spec-key))
       :description (str "Access a " type-name)
       :args (create-query-args all-fields opts)
       :resolve (keyword "query" query-name) }}))

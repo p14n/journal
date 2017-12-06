@@ -14,7 +14,7 @@
                            y (println tr)
                            res (query-from-selection tr)
                            x (println res)]
-                       [{:email "xxx"}])))
+                       res)))
 
 (defn resolver-map []
   {:query/person (query-function)

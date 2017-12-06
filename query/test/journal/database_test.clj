@@ -9,7 +9,9 @@
 
 (deftest query-creation
   (testing "Check selection tree coverts to pull query"
-    (is (= [:Person/email :Person/firstname {:Person/groups [:Group/name]}]
+    (is (= [[:Person/email :as :email]
+            [:Person/firstname :as :firstname]
+            {:Person/groups [[:Group/name :as :name]]}]
            (sut/to-query {:Person/email nil,
                           :Person/firstname nil,
                           :Person/groups
