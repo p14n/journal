@@ -5,7 +5,7 @@
   :resource-paths #{"resources"}
   :dependencies '[;; App
                   [org.clojure/clojure    "1.9.0-RC1"]
-                  [com.datomic/datomic-free "0.9.5407"]
+                  [com.datomic/datomic-free "0.9.5656"]
                   [compojure "1.5.1"]
                   [http-kit "2.2.0"] 
                   [com.walmartlabs/lacinia "0.18.0" :exclusions [clojure-future-spec]]

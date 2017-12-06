@@ -9,9 +9,12 @@
             [clojure.pprint :refer [pprint]]
             [com.walmartlabs.lacinia.executor :as executor]))
 
-
 (defn query-function []
-  (fn [ctx args val] (query-from-selection (executor/selections-tree ctx))))
+  (fn [ctx args val] (let [tr (executor/selections-tree ctx)
+                           y (println tr)
+                           res (query-from-selection tr)
+                           x (println res)]
+                       [{:email "xxx"}])))
 
 (defn resolver-map []
   {:query/person (query-function)

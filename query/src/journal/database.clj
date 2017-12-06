@@ -31,20 +31,25 @@
                        v])) args )))
 
 (defn to-query [selection-tree]
-  (vec (flatten (map (fn [[k v]]
-                       (cond
-                         (nil? v) [k]
-                         (contains? v :selections) { k (to-query (:selections v))}
-                         :default nil)) selection-tree))))
+  (vec (map (fn [[k v]]
+              (cond
+                (nil? v) [k :as (name k)]
+                (contains? v :selections) { k (to-query (:selections v))}
+                :default nil)) selection-tree)))
 
 (defn pull-query [db pattern lookup]
   (println pattern)
-  (d/pull db pattern lookup))
+  (def res (d/q pattern db lookup))
+  (clojure.pprint/pprint res)
+  (first res))
+;;[:find (pull ?e [:user/firstname,:user/lastname,:user/email,:db/id]) :where [?e :user/email]]
+;;[:find (pull ?e [:Person/email {:Person/groups [:Group/name]}]) :where [?e :user/email]]
 
 (defn query-from-selection
   ([selection-tree db]
    (let [pattern (to-query selection-tree)]
-     (pull-query db pattern '[?e :Person/email])))
+     (pull-query db `[:find (~(symbol "pull") ?e# ~pattern) :where [?e# :Person/email]] nil)))
+
   ([selection-tree]
    (query-from-selection selection-tree (d/db conn))))
 
