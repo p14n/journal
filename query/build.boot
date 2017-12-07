@@ -65,6 +65,7 @@
   (tn/refresh :after 'mount.core/start))
 
 (deftask write-schema []
+  (load-data-readers!)
   (require 'app.spec)
   (let [write-function (resolve 'app.spec/write-app-schema)]
     (write-function)))

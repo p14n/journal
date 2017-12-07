@@ -51,8 +51,8 @@
 
 (defn run-query [db pattern lookup]
   (println pattern)
-  (let [res (first (d/q pattern db lookup))
-        x (println res)] res))
+  (let [res (d/q pattern db)
+        x (println res)] (map first res)))
 
 (defn query-from-selection
   ([selection-tree is-id? db]

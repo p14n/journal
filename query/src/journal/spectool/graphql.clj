@@ -31,7 +31,7 @@
               :object-set object-set
               :typemappingfunc mappingfunc}]
     {(simple-name spec-key)
-     (merge (dissoc (:other spec-converted) :args)
+     (merge (dissoc (:other spec-converted) :args :unique)
             {:fields
              (apply merge
                     (apply conj

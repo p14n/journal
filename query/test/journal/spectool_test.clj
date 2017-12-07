@@ -34,6 +34,7 @@
 (def app-schema
   {:objects {::Person {:description "A person in the system"
                        :args #{::email ::ID}
+                       :unique #{::email}
                        :fields { ::groups { :description
                                            "Groups this person belongs to"
                                            :resolve :Person/groups}}}

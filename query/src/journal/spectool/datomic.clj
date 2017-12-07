@@ -22,24 +22,29 @@
    (coll? field)
    (contains? (set field) 'clojure.spec.alpha/coll-of)))
 
-(defn create-datomic-field[ns name ismany type]
-  {
-   ;;:db/id #db/id[:db.part/db]
-   :db/ident  (keyword ns name)
-   :db/cardinality (if ismany :db.cardinality/many :db.cardinality/one)
-   :db/valueType (keyword "db.type" type)
-   :db.install/_attribute :db.part/db
-   })
+(defn create-datomic-field[ns name ismany type unique]
+  (println unique)
+  (merge (if unique {  :db/unique :db.unique/identity } {})
+         {
+          ;;:db/id #db/id[:db.part/db]
+          :db/ident  (keyword ns name)
+          :db/cardinality (if ismany :db.cardinality/many :db.cardinality/one)
+          :db/valueType (keyword "db.type" type)
+          :db.install/_attribute :db.part/db
+          }))
 
 (defn create-datomic-fields [schema-object object-set]
   (let [object-name (name (get-in schema-object [:object :def]))
         fields (apply conj (get-in schema-object [:object :req])
                       (get-in schema-object [:object :opt]))
-        ref (:ref schema-object)]
+        ref (:ref schema-object)
+        uniques (get-in schema-object [:other :unique])
+        x (println schema-object)]
     {object-name (map #(create-datomic-field object-name
                                               (name %)
                                               (is-many (ref %))
-                                              (datomic-type (ref %) object-set)) fields)}))
+                                              (datomic-type (ref %) object-set)
+                                              (contains? uniques %)) fields)}))
 
 (defn create-datomic-schema [object-tuples]
   (let [object-name-set (set (map first object-tuples))
