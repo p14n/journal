@@ -34,8 +34,7 @@
                                            "Groups this person belongs to"}}}
              ::Group {:description "A group of people"
                       :args #{::name ::ID}
-                      :fields { ::people {:description "People in this group"}}}}
-   :queries [::Person ::Group]})
+                      :fields { ::people {:description "People in this group"}}}}})
 
 (defn is-id?[field] (= (name field) "ID"))
 

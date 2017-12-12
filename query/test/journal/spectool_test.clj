@@ -3,6 +3,7 @@
              [clojure.edn :as edn]
              [journal.spectool.core :as pst]
              [journal.spectool.datomic :as dst]
+             [journal.spectool.graphql :as gst]
              [journal.graphql :as g]
              [clojure.spec.alpha :as spec]
              [com.walmartlabs.lacinia.util :refer [attach-resolvers]]
@@ -31,6 +32,10 @@
    :req [::name ::ID]
    :opt [::people]))
 
+(spec/fdef ::addGroupToPerson
+           :args (spec/cat :person ::ID :group ::ID)
+           :ret ::Person)
+
 (def app-schema
   {:objects {::Person {:description "A person in the system"
                        :args #{::email ::ID}
@@ -41,9 +46,7 @@
              ::Group {:description "A group of people"
                       :args #{::name ::ID}
                       :fields {::people {:description "People in this group"
-                                          :resolve :Group/people}}}}
-   :queries [::Person ::Group]})
-
+                                         :resolve :Group/people}}}}})
 
 (def schema-map
   (read-string
@@ -51,16 +54,20 @@
 
 (def converted (pst/convert-to-object-tuples app-schema))
 
-;;(pprint converted)
-
 (def datomic-schema (pst/create-datomic-schema converted))
 
-(pprint datomic-schema)
+;;(pprint datomic-schema)
 
 (defn type-mapping-func [field]
-  (if (= field '::ID) (symbol "ID") nil))
+  (let [match (if (= field '::ID) (symbol "ID") nil)]
+    match))
 
-(def graphql (pst/convert-to-graphql converted type-mapping-func '::ID))
+(def graphql (pst/convert-to-graphql
+              converted
+              type-mapping-func
+              '::ID))
+;;[::addGroupToPerson]
+;;(pprint graphql)
 
 (deftest graphql-conversion
   (testing "Graphql conversion"
@@ -69,7 +76,15 @@
     (testing "to queries"
       (is (= (:queries schema-map) (:queries graphql))))
     (testing "to mutations"
-      (is (= (:mutations schema-map) (:mutations graphql))))))
+      (is (= (:mutations schema-map) (:mutations graphql))))
+    (testing "mutations from function spec"
+      (let [converted (gst/mutation-from-spec ::addGroupToPerson type-mapping-func)]
+        (is (= [:addGroupToPerson
+                {:args
+                 {:person {:type 'ID}
+                  :group {:type 'ID}}
+                 :resolve :mutation/addGroupToPerson
+                 :type :Person}] converted))))))
 
 (deftest datomic-conversion
   (testing "Datomic conversion"

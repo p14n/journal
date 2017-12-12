@@ -38,8 +38,7 @@
         fields (apply conj (get-in schema-object [:object :req])
                       (get-in schema-object [:object :opt]))
         ref (:ref schema-object)
-        uniques (get-in schema-object [:other :unique])
-        x (println schema-object)]
+        uniques (get-in schema-object [:other :unique])]
     {object-name (map #(create-datomic-field object-name
                                               (name %)
                                               (is-many (ref %))

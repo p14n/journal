@@ -93,19 +93,33 @@
      {:type (keyword type-name) :resolve (keyword "mutation" change-name)
       :args (create-query-args all-fields opts)}}))
 
+(defn mutation-from-spec [so typemappingfunc]
+  (let [converted (convert-spec-object so)
+        mname (name (ffirst converted))
+        blank-opts {:refs {} :object-set {} :wrapfunc identity :typemappingfunc identity}
+        as-map (reduce #(merge %1 (vec %2)) {} (partition 2 (rest (first (vals converted)))))
+        args (map #(do [(first  %) {:type (typemappingfunc (second %))}])
+                  (partition 2 (rest (as-map :args))))]
+    [(keyword mname) {:args (into {} args)
+            :resolve (keyword "mutation" mname)
+            :type (keyword (name (as-map :ret)))}]))
 
-(defn convert-to-graphql [refactored-object-tuples typemappingfunc id-field]
-  (let [object-set (set (map first refactored-object-tuples))
-        lacinia-map-function (to-lacinia-map object-set typemappingfunc)
-        lacinia-objects (lacinia-map-function
-                         create-lacinia-object refactored-object-tuples)
-        lacinia-queries (lacinia-map-function
-                         create-lacinia-query refactored-object-tuples)
-        lacinia-mutations (reduce merge {} (map #(create-lacinia-mutation
+(defn convert-to-graphql
+  ([refactored-object-tuples typemappingfunc id-field other-mutations]
+   (let [object-set (set (map first refactored-object-tuples))
+         lacinia-map-function (to-lacinia-map object-set typemappingfunc)
+         lacinia-objects (lacinia-map-function
+                          create-lacinia-object refactored-object-tuples)
+         lacinia-queries (lacinia-map-function
+                          create-lacinia-query refactored-object-tuples)
+         lacinia-mutations (reduce merge {}
+                                   (map #(create-lacinia-mutation
                                           % object-set typemappingfunc id-field)
                                         refactored-object-tuples))]
-    {:objects lacinia-objects
-     :queries lacinia-queries
-     :mutations lacinia-mutations}))
+     {:objects lacinia-objects
+      :queries lacinia-queries
+      :mutations (merge {} lacinia-mutations (reduce merge {} (map #(mutation-from-spec % typemappingfunc)  other-mutations)))}))
+  ([refactored-object-tuples typemappingfunc id-field]
+   (convert-to-graphql refactored-object-tuples typemappingfunc id-field [])))
 
 
