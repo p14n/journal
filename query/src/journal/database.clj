@@ -66,7 +66,7 @@
   ([selection-tree is-id?]
    (query-from-selection selection-tree is-id? (d/db conn))))
 
-(defn create-entity
+(defn upsert-entity
   "Takes transaction data and returns the resolved tempid"
   [con tx-data]
   (let [had-id (contains? tx-data :db/id)
@@ -90,18 +90,3 @@
                              (map? v) [(keyword (name k)) (keyname-only v)]
                              :default [(keyword (name k)) v]))) m))
 
-(defn mutate-function [object-name conn]
-  (fn [ctx args val]
-    (try (->> args
-              (to-tx-data object-name)
-;;              (#(do (println %) %))
-  ;;            (#(do (println "mutate") %))
-              (create-entity conn)
-              (#(do (println (str "xxxjhfskjhsjkdhf" %)) %))
-              (#(resolve-entity (:db-after %) (:ID %)))
-              (#(do (println %) %))
-              (keyname-only)
-
-              (#(do (println (str "WAT" %)) %))
-              )
-         (catch Exception e (do (.printStackTrace e) (throw e))))))

@@ -2,9 +2,10 @@
   (:require [clojure.spec.alpha :as spec]
             [journal.spectool.core :as st]
             [com.walmartlabs.lacinia.executor :as executor]
-            [journal.database :refer [conn
-                                      mutate-function
-                                      query-from-selection]]))
+            [journal.database :refer [conn]]
+            [journal.query :refer [mutate-function
+                                   add-attribute-function
+                                   query-function]]))
 
 (spec/def ::firstname string?)
 (spec/def ::lastname string?)
@@ -26,6 +27,10 @@
    :req [::name ::ID]
    :opt [::people]))
 
+(spec/fdef ::addGroupToPerson
+           :args (spec/cat :person ::ID :group ::ID)
+           :ret ::Person)
+
 (def app-schema
   {:objects {::Person {:description "A person in the system"
                        :args #{::email ::ID}
@@ -41,25 +46,25 @@
 (defn type-mapping-function[field]
   (if (= field ::ID) (symbol "ID") nil))
 
-(defn query-function []
-  (fn [ctx args val]
-    (try (query-from-selection (executor/selections-tree ctx) is-id?)
-         (catch Exception e (do (.printStackTrace e) (throw e))))))
+(def q (query-function is-id?))
 
 (defn resolver-map []
-  {:query/person (query-function)
-   :query/group (query-function)
+  {:query/person q
+   :query/group q
    :mutation/addPerson (mutate-function "Person" conn)
    :mutation/addGroup (mutate-function "Group" conn)
    :mutation/changePerson (mutate-function "Person" conn)
-   :mutation/changeGroup (mutate-function "Group" conn)})
+   :mutation/changeGroup (mutate-function "Group" conn)
+   :mutation/addGroupToPerson
+     (add-attribute-function
+      (fn [{p :person g :group}] [p :Person/groups g]) conn is-id?)})
 
 
 (defn write-app-schema []
   (let [converted (st/convert-to-object-tuples app-schema)
         tographql (st/convert-to-graphql converted
                                          type-mapping-function
-                                         '::ID)]
+                                         '::ID [::addGroupToPerson])]
     (do
       (st/write-datomic-schema-files converted "./resources/datomic/")
       (->> tographql
