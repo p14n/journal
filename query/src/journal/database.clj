@@ -35,7 +35,8 @@
               (cond
                 (is-id? k) :db/id
                 (nil? v) [k :as (keyword (name k))]
-                (contains? v :selections) { k (to-query (:selections v) is-id?)}
+                (contains? v :selections) { [k :as (keyword (name k))]
+                                           (to-query (:selections v) is-id?)}
                 :default nil)) selection-tree)))
 
 (defn replace-id-in-result [res is-id?]

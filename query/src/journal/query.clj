@@ -28,8 +28,19 @@
          (catch Exception e (do (.printStackTrace e) (throw e))))))
 
 (defn add-attribute-function [args-to-tx con is-id?]
-  (fn [ctx args val]
-    (let [tx-data (vec #(apply conj [:db/add] (args-to-tx args)))
-          tx @(d/transact con [tx-data])]
-      ((query-function is-id?) ctx args val))))
+  (try (fn [ctx args val]
+         (let [args-vec (args-to-tx args)
+               ;;tx-data (vec (apply conj [:db/add] args-vec))
+               ;;tx-data (vec (apply conj [:db/add] args-vec))
+               sdat ((fn [{p :person g :group}] [{:db/id p :Person/firstname "hry6"}]) {:person 17592186045490})
+               v (println (type (second (ffirst args-vec))))
+               v2 (println (type (second (ffirst sdat))))
+               v3 (println (= (second (ffirst args-vec)) (second (ffirst sdat))))
+               tt (println "WWWWW")
+               tx @(d/transact con sdat)
+               ttt (println "AAAAWWWWW")
+               t (println tx)]
+           ;;((query-function is-id?) ctx args val)
+           {}))
+    (catch Exception e (do (.printStackTrace e) (throw e)))))
 

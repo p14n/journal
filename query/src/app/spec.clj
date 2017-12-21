@@ -47,6 +47,7 @@
   (if (= field ::ID) (symbol "ID") nil))
 
 (def q (query-function is-id?))
+(defn string-to-long [as-string] (Long/parseLong as-string))
 
 (defn resolver-map []
   {:query/person q
@@ -57,7 +58,7 @@
    :mutation/changeGroup (mutate-function "Group" conn)
    :mutation/addGroupToPerson
      (add-attribute-function
-      (fn [{p :person g :group}] [p :Person/groups g]) conn is-id?)})
+      (fn [{p :person g :group}] [{:db/id (string-to-long p) :Person/groups (string-to-long g)}]) conn is-id?)})
 
 
 (defn write-app-schema []
