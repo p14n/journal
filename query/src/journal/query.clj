@@ -8,9 +8,9 @@
                                       query-from-selection
                                       to-tx-data]]))
 
-(defn query-function [is-id?]
+(defn query-function [object-name is-id?]
   (fn [ctx args val]
-    (try (query-from-selection (executor/selections-tree ctx) is-id?)
+    (try (query-from-selection object-name (executor/selections-tree ctx) args is-id?)
          (catch Exception e (do (.printStackTrace e) (throw e))))))
 
 (defn mutate-function [object-name con]
@@ -37,7 +37,7 @@
                v2 (println (type (second (ffirst sdat))))
                v3 (println (= (second (ffirst args-vec)) (second (ffirst sdat))))
                tt (println "WWWWW")
-               tx @(d/transact con sdat)
+               tx @(d/transact con args-vec)
                ttt (println "AAAAWWWWW")
                t (println tx)]
            ;;((query-function is-id?) ctx args val)

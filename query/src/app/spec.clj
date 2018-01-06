@@ -46,12 +46,12 @@
 (defn type-mapping-function[field]
   (if (= field ::ID) (symbol "ID") nil))
 
-(def q (query-function is-id?))
+(defn q [object-name] (query-function object-name is-id?))
 (defn string-to-long [as-string] (Long/parseLong as-string))
 
 (defn resolver-map []
-  {:query/person q
-   :query/group q
+  {:query/person (q "Person")
+   :query/group (q "Group")
    :mutation/addPerson (mutate-function "Person" conn)
    :mutation/addGroup (mutate-function "Group" conn)
    :mutation/changePerson (mutate-function "Person" conn)
