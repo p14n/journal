@@ -54,7 +54,8 @@
   (println (str "pattern/lookup "  pattern lookup))
   (let [res (if (nil? lookup)
               (map first (d/q pattern db))
-              [(d/pull db pattern lookup)]) 
+              (let [maybe-one (d/pull db pattern lookup)]
+                (if (nil? maybe-one) [] [maybe-one]))) 
         x (println res)] res))
 
 (defn to-where [object-name args entity-symbol is-id?]
