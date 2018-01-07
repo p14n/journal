@@ -53,9 +53,9 @@
 (defn run-query [db pattern lookup]
   (println (str "pattern/lookup "  pattern lookup))
   (let [res (if (nil? lookup)
-              (d/q pattern db)
-              (d/pull db pattern lookup)) 
-        x (println res)] (map first res)))
+              (map first (d/q pattern db))
+              [(d/pull db pattern lookup)]) 
+        x (println res)] res))
 
 (defn to-where [object-name args entity-symbol is-id?]
   (map (fn[[k v]](if (is-id? k)
