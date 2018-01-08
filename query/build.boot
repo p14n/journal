@@ -19,7 +19,7 @@
                   [org.clojure/tools.nrepl "0.2.12"         :scope "provided"]
                   [boot/core              "2.7.2"           :scope "provided"]
                   [adzerk/boot-test "1.0.7"                 :scope "test"]
-                  [metosin/boot-alt-test "0.3.2"            :scope "test"]
+                  [metosin/boot-alt-test "0.4.0-SNAPSHOT"   :scope "test"]
                   [tolitius/boot-check    "0.1.2"           :scope "test"]])
 
 (require '[tolitius.boot-check :as check]
@@ -28,12 +28,15 @@
          '[mount.core :refer [start stop]]
          '[metosin.boot-alt-test :refer (alt-test)])
 
-(deftask watch-test
-  "Runs tests"
-  []
+(deftask watch-test "Runs tests" []
   (set-env! :source-paths #{"src" "test"}
             :resource-paths #{"resources" "test-resources"})
   (comp (watch) (alt-test)))
+
+(deftask coverage "Runs tests with coverage" []
+  (set-env! :source-paths #{"src" "test"}
+            :resource-paths #{"resources" "test-resources"})
+  (alt-test "-c"))
 
 (deftask check-sources []
   (set-env! :source-paths #{"src" "test"})
@@ -65,7 +68,6 @@
   (tn/refresh :after 'mount.core/start))
 
 (deftask write-schema []
-  (load-data-readers!)
   (require 'app.spec)
   (let [write-function (resolve 'app.spec/write-app-schema)]
     (write-function)))

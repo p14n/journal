@@ -1,6 +1,5 @@
 (ns journal.spectool-test
   (:require  [clojure.java.io :as io]
-             [clojure.edn :as edn]
              [journal.spectool.core :as pst]
              [journal.spectool.datomic :as dst]
              [journal.spectool.graphql :as gst]

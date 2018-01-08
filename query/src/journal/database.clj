@@ -63,7 +63,7 @@
                 [entity-symbol (Long/parseLong v)]
                 [entity-symbol (keyword object-name (name k)) v])) args))
 
-(defn query-from-selection
+(defn query-from-selection "Runs a query from a selection tree and returns the result"
   ([object-name selection-tree args is-id? db]
    (let [pattern (to-query selection-tree is-id?)
          by-id (some is-id? (keys args))
@@ -85,15 +85,15 @@
   "Takes transaction data and returns the resolved tempid"
   [con tx-data]
   (let [had-id (contains? tx-data :db/id)
+        maybe-id (d/tempid :db.part/user)
         data-with-id (if had-id
                        tx-data
-                       (assoc tx-data :db/id #db/id[:db.part/user -1000001]))
+                       (assoc tx-data :db/id maybe-id))
         data-as-vec (vec (flatten (vec data-with-id)))
         ;;xxx (println data-with-id)
         tx @(d/transact con [data-with-id])]
     (if had-id (assoc tx :ID (tx-data :db/id))
-        (assoc tx :ID (d/resolve-tempid (d/db con) (:tempids tx)
-                                        (d/tempid :db.part/user -1000001))))))
+        (assoc tx :ID (d/resolve-tempid (d/db con) (:tempids tx) maybe-id)))))
 
 (defn resolve-entity "Takes a db id and db and returns the entity"
   [db id] (into {:ID id :db/id id} (d/touch (d/entity db id))))
