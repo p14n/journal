@@ -6,11 +6,15 @@
                                       resolve-entity
                                       keyname-only
                                       query-from-selection
+                                      replace-id-in-results
+                                      run-query
                                       to-tx-data]]))
 
 (defn query-function [object-name is-id?]
   (fn [ctx args val]
-    (try (query-from-selection object-name (executor/selections-tree ctx) args is-id?)
+    (try (let [pattern-lookup (query-from-selection object-name (executor/selections-tree ctx) args is-id?)
+               res (run-query (d/db conn) pattern-lookup)]
+           (replace-id-in-results res #(= :db/id %)))
          (catch Exception e (do (.printStackTrace e) (throw e))))))
 
 (defn mutate-function [object-name con]

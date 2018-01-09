@@ -50,7 +50,7 @@
 (defn replace-id-in-results [res is-id?]
   (map #(replace-id-in-result % is-id?) res))
 
-(defn run-query [db pattern lookup]
+(defn run-query [db {pattern :pattern lookup :lookup}]
   (println (str "pattern/lookup "  pattern lookup))
   (let [res (if (nil? lookup)
               (map first (d/q pattern db))
@@ -64,22 +64,15 @@
                 [entity-symbol (keyword object-name (name k)) v])) args))
 
 (defn query-from-selection "Runs a query from a selection tree and returns the result"
-  ([object-name selection-tree args is-id? db]
-   (let [pattern (to-query selection-tree is-id?)
-         by-id (some is-id? (keys args))
-         res (if by-id
-               (let [id-key (first (filter is-id? (keys args)))
-                     id-val (Long/parseLong (args id-key))]
-                 (run-query db pattern id-val))
-               (let [where-clause (to-where object-name args (symbol "?e") is-id?)]
-                 (run-query db `[:find (~(symbol "pull") ~(symbol "?e") ~pattern) :where ~@where-clause] nil)))
-         replaced (replace-id-in-results res #(= :db/id %))
-         x (println replaced)]
-     replaced
-     ))
-
   ([object-name selection-tree args is-id?]
-   (query-from-selection object-name selection-tree args is-id? (d/db conn))))
+   (let [pattern (to-query selection-tree is-id?)
+         by-id (some is-id? (keys args))]
+     (if by-id
+       (let [id-key (first (filter is-id? (keys args)))
+             id-val (Long/parseLong (args id-key))]
+         {:pattern pattern :lookup id-val})
+       (let [where-clause (to-where object-name args (symbol "?e") is-id?)]
+         {:pattern  `[:find (~(symbol "pull") ~(symbol "?e") ~pattern) :where ~@where-clause] :lookup nil})))))
 
 (defn upsert-entity
   "Takes transaction data and returns the resolved tempid"

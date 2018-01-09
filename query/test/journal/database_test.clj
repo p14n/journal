@@ -13,15 +13,18 @@
     (is (= { :Person/email "dean@p14n.com" }
            (sut/to-tx-data "Person" {:email "dean@p14n.com"})))))
 
-(deftest query-creation
+(def sample-selection-tree
+  {:Person/email nil,
+   :Person/firstname nil,
+   :Person/groups
+   {:selections {:Group/name nil}}})
+
+(deftest query-creation-from-selection-tree
   (testing "Check selection tree coverts to pull query"
     (is (= [[:Person/email :as :email]
             [:Person/firstname :as :firstname]
             {[:Person/groups :as :groups] [[:Group/name :as :name]]}]
-           (sut/to-query {:Person/email nil,
-                          :Person/firstname nil,
-                          :Person/groups
-                          {:selections {:Group/name nil}}} #(do (nil? %)))))))
+           (sut/to-query sample-selection-tree #(do (nil? %)))))))
 
 (deftest replacing-id
   (testing "Check that the :db/id is replaced with :ID in results"
@@ -35,4 +38,16 @@
     (is (= '([?e :Person/email "dean"] [?e 1])
            (sut/to-where "Person" { :email "dean" :ID "1"} (symbol "?e") #(= % :ID))))))
 
+(deftest creates-query-and-lookup
+  (testing "Creates a query and where clause from selection tree and args"
+    (is (= {:pattern '[:find
+                       (pull
+                        ?e
+                        [[:Person/email :as :email]
+                         [:Person/firstname :as :firstname]
+                         {[:Person/groups :as :groups] [[:Group/name :as :name]]}])
+                       :where
+                       [?e :Person/email "wut"]] :lookup nil}
+           (sut/query-from-selection "Person" sample-selection-tree
+                                     {:email "wut"} #(= % "ID"))))))
 
