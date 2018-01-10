@@ -1,0 +1,99 @@
+{
+    "docs": [
+        {
+            "location": "/", 
+            "text": "Journal\n\n\nWhat's this all about?\n\n\nThis software is the result of iterating over ideas I've heard about in books, on twitter, and from friends.  While it's primarily a playground for ideas, each idea builds on the previous, adding some new quality or ability.  Tests, docs, deployment - everything should be production quality.\n\n\nSetup\n\n\nbrew install boot-clj\ngit clone https://github.com/p14n/journal\ncd query\nboot repl\n\n (dev)\n\n (start)\n\n\n\nNavigate to http://localhost:8085/query/graphiql/graphiql.html\n\n\nArchitecture\n\n\nDecision records\n\n\n\n\nRecord architecture decisions\n\n\nImplement a query server with graphql", 
+            "title": "Journal"
+        }, 
+        {
+            "location": "/#journal", 
+            "text": "", 
+            "title": "Journal"
+        }, 
+        {
+            "location": "/#whats-this-all-about", 
+            "text": "This software is the result of iterating over ideas I've heard about in books, on twitter, and from friends.  While it's primarily a playground for ideas, each idea builds on the previous, adding some new quality or ability.  Tests, docs, deployment - everything should be production quality.", 
+            "title": "What's this all about?"
+        }, 
+        {
+            "location": "/#setup", 
+            "text": "brew install boot-clj\ngit clone https://github.com/p14n/journal\ncd query\nboot repl  (dev)  (start)  Navigate to http://localhost:8085/query/graphiql/graphiql.html", 
+            "title": "Setup"
+        }, 
+        {
+            "location": "/#architecture", 
+            "text": "", 
+            "title": "Architecture"
+        }, 
+        {
+            "location": "/#decision-records", 
+            "text": "Record architecture decisions  Implement a query server with graphql", 
+            "title": "Decision records"
+        }, 
+        {
+            "location": "/architecture/decisions/0001-record-architecture-decisions/", 
+            "text": "1. Record architecture decisions\n\n\nDate: 2017-11-21\n\n\nStatus\n\n\nAccepted\n\n\nContext\n\n\nWe need to record the architectural decisions made on this project.\n\n\nDecision\n\n\nWe will use Architecture Decision Records, as described by Michael Nygard in this article: http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions\n\n\nConsequences\n\n\nSee Michael Nygard's article, linked above. For a lightweight ADR toolset, see Nat Pryce's \nadr-tools\n at https://github.com/npryce/adr-tools.", 
+            "title": "1. Record architecture decisions"
+        }, 
+        {
+            "location": "/architecture/decisions/0001-record-architecture-decisions/#1-record-architecture-decisions", 
+            "text": "Date: 2017-11-21", 
+            "title": "1. Record architecture decisions"
+        }, 
+        {
+            "location": "/architecture/decisions/0001-record-architecture-decisions/#status", 
+            "text": "Accepted", 
+            "title": "Status"
+        }, 
+        {
+            "location": "/architecture/decisions/0001-record-architecture-decisions/#context", 
+            "text": "We need to record the architectural decisions made on this project.", 
+            "title": "Context"
+        }, 
+        {
+            "location": "/architecture/decisions/0001-record-architecture-decisions/#decision", 
+            "text": "We will use Architecture Decision Records, as described by Michael Nygard in this article: http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions", 
+            "title": "Decision"
+        }, 
+        {
+            "location": "/architecture/decisions/0001-record-architecture-decisions/#consequences", 
+            "text": "See Michael Nygard's article, linked above. For a lightweight ADR toolset, see Nat Pryce's  adr-tools  at https://github.com/npryce/adr-tools.", 
+            "title": "Consequences"
+        }, 
+        {
+            "location": "/architecture/decisions/0002-use-clojure-graphql-datomic-query-server/", 
+            "text": "2. Use clojure/graphql/datomic query server\n\n\nDate: 2017-11-21\n\n\nStatus\n\n\nProposed\n\n\nContext\n\n\nI'd like to experiment with event driven architecture to\n\n decouple parts of the system\n\n separate query for scale\n\n\nI've identified a potential sweet spot with clojure's spec, graphql and datomic which could give me the flexibility I want by only specifying the schema of stored data in spec and using that to create both datomic and graphql schemas.\n\n\nReferences\n\n\nhttps://github.com/walmartlabs/lacinia\nhttps://github.com/metosin/spec-tools\nhttps://github.com/lab-79/dspec\n\n\nDecision\n\n\nConsequences", 
+            "title": "2. Use clojure/graphql/datomic query server"
+        }, 
+        {
+            "location": "/architecture/decisions/0002-use-clojure-graphql-datomic-query-server/#2-use-clojuregraphqldatomic-query-server", 
+            "text": "Date: 2017-11-21", 
+            "title": "2. Use clojure/graphql/datomic query server"
+        }, 
+        {
+            "location": "/architecture/decisions/0002-use-clojure-graphql-datomic-query-server/#status", 
+            "text": "Proposed", 
+            "title": "Status"
+        }, 
+        {
+            "location": "/architecture/decisions/0002-use-clojure-graphql-datomic-query-server/#context", 
+            "text": "I'd like to experiment with event driven architecture to  decouple parts of the system  separate query for scale  I've identified a potential sweet spot with clojure's spec, graphql and datomic which could give me the flexibility I want by only specifying the schema of stored data in spec and using that to create both datomic and graphql schemas.", 
+            "title": "Context"
+        }, 
+        {
+            "location": "/architecture/decisions/0002-use-clojure-graphql-datomic-query-server/#references", 
+            "text": "https://github.com/walmartlabs/lacinia\nhttps://github.com/metosin/spec-tools\nhttps://github.com/lab-79/dspec", 
+            "title": "References"
+        }, 
+        {
+            "location": "/architecture/decisions/0002-use-clojure-graphql-datomic-query-server/#decision", 
+            "text": "", 
+            "title": "Decision"
+        }, 
+        {
+            "location": "/architecture/decisions/0002-use-clojure-graphql-datomic-query-server/#consequences", 
+            "text": "", 
+            "title": "Consequences"
+        }
+    ]
+}

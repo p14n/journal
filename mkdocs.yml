@@ -1,0 +1,5 @@
+site_name: Journal
+docs_dir: docsource
+site_dir: docs
+theme:
+  name: readthedocs
