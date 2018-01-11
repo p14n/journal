@@ -39,6 +39,7 @@
                                            "Groups this person belongs to"}}}
              ::Group {:description "A group of people"
                       :args #{::name ::ID}
+                      :unique #{::name}
                       :fields { ::people {:description "People in this group"}}}}})
 
 (defn is-id?[field] (= (name field) "ID"))
@@ -46,12 +47,12 @@
 (defn type-mapping-function[field]
   (if (= field ::ID) (symbol "ID") nil))
 
-(defn q [object-name] (query-function object-name is-id?))
+(defn q [object-name default-search-attribute] (query-function object-name default-search-attribute is-id?))
 (defn string-to-long [as-string] (Long/parseLong as-string))
 
 (defn resolver-map []
-  {:query/person (q "Person")
-   :query/group (q "Group")
+  {:query/person (q "Person" "email")
+   :query/group (q "Group" "name")
    :mutation/addPerson (mutate-function "Person" conn)
    :mutation/addGroup (mutate-function "Group" conn)
    :mutation/changePerson (mutate-function "Person" conn)

@@ -10,9 +10,9 @@
                                       run-query
                                       to-tx-data]]))
 
-(defn query-function [object-name is-id?]
+(defn query-function [object-name default-search-attribute is-id?]
   (fn [ctx args val]
-    (try (let [pattern-lookup (query-from-selection object-name (executor/selections-tree ctx) args is-id?)
+    (try (let [pattern-lookup (query-from-selection object-name default-search-attribute (executor/selections-tree ctx) args is-id?)
                res (run-query (d/db conn) pattern-lookup)]
            (replace-id-in-results res #(= :db/id %)))
          (catch Exception e (do (.printStackTrace e) (throw e))))))

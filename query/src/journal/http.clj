@@ -13,7 +13,7 @@
           :headers {"Content-Type" "application/json"}
           :body (let [query (get-in request [:body :query])
                       vars (get-in request [:body :variables])
-                      x (do (println vars))
+                      x (do (println query))
                       result (execute gql-schema query vars vars)]
                   (json/write-str result))}
          (catch Exception e (do (.printStackTrace e) (throw e))))))

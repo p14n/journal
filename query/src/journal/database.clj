@@ -64,7 +64,7 @@
                 [entity-symbol (keyword object-name (name k)) v])) args))
 
 (defn query-from-selection "Runs a query from a selection tree and returns the result"
-  ([object-name selection-tree args is-id?]
+  ([object-name default-search-attribute selection-tree args is-id?]
    (let [pattern (to-query selection-tree is-id?)
          by-id (some is-id? (keys args))]
      (if by-id
@@ -72,7 +72,11 @@
              id-val (Long/parseLong (args id-key))]
          {:pattern pattern :lookup id-val})
        (let [where-clause (to-where object-name args (symbol "?e") is-id?)]
-         {:pattern  `[:find (~(symbol "pull") ~(symbol "?e") ~pattern) :where ~@where-clause] :lookup nil})))))
+         (if (empty? where-clause)
+           {:pattern  `[:find (~(symbol "pull") ~(symbol "?e") ~pattern) :where [~(symbol "?e") ~(keyword object-name default-search-attribute)]] :lookup nil}
+           {:pattern  `[:find (~(symbol "pull") ~(symbol "?e") ~pattern) :where ~@where-clause] :lookup nil}
+           )
+         )))))
 
 (defn upsert-entity
   "Takes transaction data and returns the resolved tempid"

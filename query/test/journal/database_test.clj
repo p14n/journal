@@ -48,6 +48,24 @@
                          {[:Person/groups :as :groups] [[:Group/name :as :name]]}])
                        :where
                        [?e :Person/email "wut"]] :lookup nil}
-           (sut/query-from-selection "Person" sample-selection-tree
-                                     {:email "wut"} #(= % "ID"))))))
+           (sut/query-from-selection "Person" "email" sample-selection-tree
+                                     {:email "wut"} #(= % "ID")))))
+  (testing "Creates a query and default where clause from selection tree and no args"
+    (is (= {:pattern '[:find
+                       (pull
+                        ?e
+                        [[:Person/email :as :email]
+                         [:Person/firstname :as :firstname]
+                         {[:Person/groups :as :groups] [[:Group/name :as :name]]}])
+                       :where
+                       [?e :Person/email]] :lookup nil}
+           (sut/query-from-selection "Person" "email" sample-selection-tree
+                                     {} #(= % "ID")))))
+  (testing "Creates a lookup based on ID param"
+    (is (= {:lookup 1,
+            :pattern [[:Person/email :as :email]
+                      [:Person/firstname :as :firstname]
+                      {[:Person/groups :as :groups] [[:Group/name :as :name]]}]}
+           (sut/query-from-selection "Person" "email" sample-selection-tree
+                                     {"ID" "1"} #(= % "ID"))))))
 
