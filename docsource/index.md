@@ -30,11 +30,15 @@ The application should not be locked into a vendor, API or language.  It should 
 
 ### It's resistant to failure
 
-Losing a particular node won't matter, losing a system component will not prevent the others from failing.
+Losing a particular node won't matter, losing a system component will not prevent the others from working.
 
 ### It knows where its vulnerabilities are
 
-There will always be information available to show where security vulnerabilities are as of the last check-in.
+There will always be information available to show where security vulnerabilities are as of the last check-in.  
+
+### It knows what's wrong
+
+There will always be information available to show what's happening under the covers, and alert you when they're not quite right.
 
 ### It's usable by anyone, regardless of physical ability or language
 
@@ -61,5 +65,9 @@ The UI should support screen readers, be flexible in display sizing and use any 
     > (start)
 
 Navigate to http://localhost:8085/query/graphiql/graphiql.html
+
+## Documentation
+
+This documentation uses mkdocs (configured in mkdocs.yml).  The documentation source is in `./docsource`.  Running `mkdocs build` will generate the documentation in `./docs`
 
 

@@ -44,6 +44,18 @@ The query server takes the schemas above and starts a datomic instance and http-
     > (dev)
     > (start)
 
+To run unit tests while developing
+
+    boot watch-test
+
+To reload the server after changes
+
+    > (boot.user/reset)
+
 Navigate to http://localhost:8085/query/graphiql/graphiql.html
 
+### Testing
 
+```
+boot coverage
+```

@@ -26,8 +26,7 @@ https://github.com/lab-79/dspec
 
 Why, yes we can!
 
-It was simple to create functions that turned spec into lacinia/datomic schema.  It removes the chore of defining individual attibutes in three places
-.  It remains to be seen whether it saves time overall or the productivity gain is limited to only simple cases.
+It was simple to create functions that turned spec into lacinia/datomic schema.  It removes the chore of defining individual attibutes in three places.  It remains to be seen whether it saves time overall or the productivity gain is limited to only simple cases.
 
 We're happy introducing clojure.spec as a system of record as we can transpile to another format easily (as here with lacinia and datomic).
 
