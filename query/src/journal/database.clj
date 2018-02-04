@@ -25,10 +25,12 @@
   :start (setup-and-connect-to-db "datomic:mem://journal")
   :stop (close-db))
 
-(defn to-tx-data [object-name args]
+(defn to-tx-data [object-name is-id? args]
   (into {} (map (fn [[k v]]
-                  (do [(keyword object-name (name k))
-                       v])) args )))
+                  (if (is-id? k)
+                    (do [:db/id (Long/parseLong v)])
+                    (do [(keyword object-name (name k))
+                         v]))) args )))
 
 (defn to-query [selection-tree is-id?]
   (vec (map (fn [[k v]]

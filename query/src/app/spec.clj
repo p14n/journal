@@ -12,6 +12,7 @@
 (spec/def ::name string?)
 (spec/def ::email string?)
 (spec/def ::ID int?)
+(spec/def ::title string?)
 
 (spec/def ::groups (spec/coll-of ::Group))
 
@@ -53,10 +54,10 @@
 (defn resolver-map []
   {:query/person (q "Person" "email")
    :query/group (q "Group" "name")
-   :mutation/addPerson (mutate-function "Person" conn)
-   :mutation/addGroup (mutate-function "Group" conn)
-   :mutation/changePerson (mutate-function "Person" conn)
-   :mutation/changeGroup (mutate-function "Group" conn)
+   :mutation/addPerson (mutate-function "Person" is-id? conn)
+   :mutation/addGroup (mutate-function "Group" is-id? conn)
+   :mutation/changePerson (mutate-function "Person" is-id? conn)
+   :mutation/changeGroup (mutate-function "Group" is-id? conn)
    :mutation/addGroupToPerson
      (add-attribute-function
       (fn [{p :person g :group}]

@@ -167,13 +167,18 @@
         }, 
         {
             "location": "/components/query/", 
-            "text": "Query server\n\n\nCode structure\n\n\nAll code is in the subdirectory \nquery\n\n\n\n\napp\n is domain specific - it defines the spec to use in query generation as well as the startup of the application\n\n\njournal\n is framework code for the query server\n\n\njournal/spectool\n is framework code for the query server generation\n\n\n\n\nWhat it does\n\n\nThere are two parts to this component\n\n Query server generation\n\n Query server\n\n\nQuery server generation\n\n\nThe functions defined in \njournal/spectool\n use\n\n clojure.spec definitions\n\n An application schema (a clojure map that adds information to this spec)\n* A map of resolver functions\nto create a lacinia schema (written to \nresources/graphql.edn\n) and a datomic schema (written to \nresources/datomic/*.edn\n)\n\n\nThis action is attached to the boot task \nwrite-schema\n which calls \napp.spec/write-app-schema\n.\n\n\nQuery server\n\n\nThe query server takes the schemas above and starts a datomic instance and http-kit server, using the map of resolver functions to integrate lacinia and datomic.\n\n\nHow to use it\n\n\nbrew install boot-clj\ngit clone https://github.com/p14n/journal\ncd journal/query\n\n\n\nQuery server generation\n\n\nboot write-schema\n\n\n\nQuery server\n\n\nboot repl\n\n (dev)\n\n (start)\n\n\n\nTo run unit tests while developing\n\n\nboot watch-test\n\n\n\nTo reload the server after changes\n\n\n (boot.user/reset)\n\n\n\nNavigate to http://localhost:8085/query/graphiql/graphiql.html\n\n\nTesting\n\n\nboot coverage", 
+            "text": "Query server\n\n\nDemonstration\n\n\n\n\n\nCode structure\n\n\nAll code is in the subdirectory \nquery\n\n\n\n\napp\n is domain specific - it defines the spec to use in query generation as well as the startup of the application\n\n\njournal\n is framework code for the query server\n\n\njournal/spectool\n is framework code for the query server generation\n\n\n\n\nWhat it does\n\n\nThere are two parts to this component\n\n Query server generation\n\n Query server\n\n\nQuery server generation\n\n\nThe functions defined in \njournal/spectool\n use\n\n clojure.spec definitions\n\n An application schema (a clojure map that adds information to this spec)\n* A map of resolver functions\nto create a lacinia schema (written to \nresources/graphql.edn\n) and a datomic schema (written to \nresources/datomic/*.edn\n)\n\n\nThis action is attached to the boot task \nwrite-schema\n which calls \napp.spec/write-app-schema\n.\n\n\nQuery server\n\n\nThe query server takes the schemas above and starts a datomic instance and http-kit server, using the map of resolver functions to integrate lacinia and datomic.\n\n\nHow to use it\n\n\nbrew install boot-clj\ngit clone https://github.com/p14n/journal\ncd journal/query\n\n\n\nQuery server generation\n\n\nboot write-schema\n\n\n\nQuery server\n\n\nboot repl\n\n (dev)\n\n (start)\n\n\n\nTo run unit tests while developing\n\n\nboot watch-test\n\n\n\nTo reload the server after changes\n\n\n (boot.user/reset)\n\n\n\nNavigate to http://localhost:8085/query/graphiql/graphiql.html\n\n\nTesting\n\n\nboot coverage", 
             "title": "Query server"
         }, 
         {
             "location": "/components/query/#query-server", 
             "text": "", 
             "title": "Query server"
+        }, 
+        {
+            "location": "/components/query/#demonstration", 
+            "text": "", 
+            "title": "Demonstration"
         }, 
         {
             "location": "/components/query/#code-structure", 

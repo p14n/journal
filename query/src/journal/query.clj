@@ -17,12 +17,10 @@
            (replace-id-in-results res #(= :db/id %)))
          (catch Exception e (do (.printStackTrace e) (throw e))))))
 
-(defn mutate-function [object-name con]
+(defn mutate-function [object-name is-id? con]
   (fn [ctx args val]
     (try (->> args
-              (to-tx-data object-name)
-              ;;              (#(do (println %) %))
-              ;;            (#(do (println "mutate") %))
+              (to-tx-data object-name is-id?)
               (upsert-entity con)
               (#(do (println (str "xxxjhfskjhsjkdhf" %)) %))
               (#(resolve-entity (:db-after %) (:ID %)))
