@@ -1,0 +1,5 @@
+mutation {
+  addPerson(email: "dean@p14n.com", firstname:"Dean"){
+    ID
+  }
+}

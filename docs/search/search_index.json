@@ -1,0 +1,224 @@
+{
+    "docs": [
+        {
+            "location": "/", 
+            "text": "Journal\n\n\nWelcome to the Journal docs.  This page talks about the characteristics the architecure exhibits (or plans to exhibit) introduces each component, and shows you how to see it in action on your own laptop.\n\n\nCharacteristics\n\n\nIts user-access agnostic (it's not just a web app)\n\n\nWho knows what we're building here?  It's probably web, could be mobile, might just be a SaaS api. It's an application designed to be access remotely (I'm hoping it's not a device driver) but beyond that we should make no assumptions and treat all types of acces in the same way.\n\n\nIt's got X-Factor scale (yes, the TV show)\n\n\nThe 2010 UK X-Factor final attracted 17.7m viewers.  Let's say each of those people, during the time of the final (2 hours), wanted to make 20 requests to our app.  That gives us a goal of 50k requests per second (17.7m / 120 mins / 60 seconds * 20 requests).  That seems like a reasonable goal while still working on a toy infrastructure.  Yes, I know it's just made up, but so are viewing figures  - they're based on 5000 houses.\n\n\nIt always knows what happened\n\n\nTesting new ideas, application monitoring and issue resolution all require information about what is going on, and what has happened. We should never need to dial up the logging or find ourselves guessing - the application ahould be publishing this information.\n\n\nIt's cheap and fast to experiment with\n\n\nIt's not going to get used unless it's more like using Ruby on Rails than JavaEE. We should be able to try out new business ideas quickly and ditch them quicker.\n\n\nIt can deploy to production in under 1 hour from code commit\n\n\nThe one hour should include going through tests that give us confidence to deploy to production from the Christmas Party.\n\n\nIt expects to change\n\n\nThe application should not be locked into a vendor, API or language.  It should be data-centric (preferably with a schema) - we don't want to restrict which platforms we use to build on. \n\n\nIt's resistant to failure\n\n\nLosing a particular node won't matter, losing a system component will not prevent the others from working.\n\n\nIt knows where its vulnerabilities are\n\n\nThere will always be information available to show where security vulnerabilities are as of the last check-in.  \n\n\nIt knows what's wrong\n\n\nThere will always be information available to show what's happening under the covers, and alert you when they're not quite right.\n\n\nIt's usable by anyone, regardless of physical ability or language\n\n\nThe UI should support screen readers, be flexible in display sizing and use any language including double byte and right to left.\n\n\nArchitecture\n\n\nComponents\n\n\n\n\nQuery\n\n\n\n\nDecision records\n\n\n\n\nRecord architecture decisions\n\n\nImplement a query server with graphql\n\n\n\n\nSetup\n\n\nbrew install boot-clj\ngit clone https://github.com/p14n/journal\ncd journal/query\nboot repl\n\n (dev)\n\n (start)\n\n\n\nNavigate to http://localhost:8085/query/graphiql/graphiql.html\n\n\nDocumentation\n\n\nThis documentation uses mkdocs (configured in mkdocs.yml).  The documentation source is in \n./docsource\n.  Running \nmkdocs build\n will generate the documentation in \n./docs", 
+            "title": "Journal"
+        }, 
+        {
+            "location": "/#journal", 
+            "text": "Welcome to the Journal docs.  This page talks about the characteristics the architecure exhibits (or plans to exhibit) introduces each component, and shows you how to see it in action on your own laptop.", 
+            "title": "Journal"
+        }, 
+        {
+            "location": "/#characteristics", 
+            "text": "", 
+            "title": "Characteristics"
+        }, 
+        {
+            "location": "/#its-user-access-agnostic-its-not-just-a-web-app", 
+            "text": "Who knows what we're building here?  It's probably web, could be mobile, might just be a SaaS api. It's an application designed to be access remotely (I'm hoping it's not a device driver) but beyond that we should make no assumptions and treat all types of acces in the same way.", 
+            "title": "Its user-access agnostic (it's not just a web app)"
+        }, 
+        {
+            "location": "/#its-got-x-factor-scale-yes-the-tv-show", 
+            "text": "The 2010 UK X-Factor final attracted 17.7m viewers.  Let's say each of those people, during the time of the final (2 hours), wanted to make 20 requests to our app.  That gives us a goal of 50k requests per second (17.7m / 120 mins / 60 seconds * 20 requests).  That seems like a reasonable goal while still working on a toy infrastructure.  Yes, I know it's just made up, but so are viewing figures  - they're based on 5000 houses.", 
+            "title": "It's got X-Factor scale (yes, the TV show)"
+        }, 
+        {
+            "location": "/#it-always-knows-what-happened", 
+            "text": "Testing new ideas, application monitoring and issue resolution all require information about what is going on, and what has happened. We should never need to dial up the logging or find ourselves guessing - the application ahould be publishing this information.", 
+            "title": "It always knows what happened"
+        }, 
+        {
+            "location": "/#its-cheap-and-fast-to-experiment-with", 
+            "text": "It's not going to get used unless it's more like using Ruby on Rails than JavaEE. We should be able to try out new business ideas quickly and ditch them quicker.", 
+            "title": "It's cheap and fast to experiment with"
+        }, 
+        {
+            "location": "/#it-can-deploy-to-production-in-under-1-hour-from-code-commit", 
+            "text": "The one hour should include going through tests that give us confidence to deploy to production from the Christmas Party.", 
+            "title": "It can deploy to production in under 1 hour from code commit"
+        }, 
+        {
+            "location": "/#it-expects-to-change", 
+            "text": "The application should not be locked into a vendor, API or language.  It should be data-centric (preferably with a schema) - we don't want to restrict which platforms we use to build on.", 
+            "title": "It expects to change"
+        }, 
+        {
+            "location": "/#its-resistant-to-failure", 
+            "text": "Losing a particular node won't matter, losing a system component will not prevent the others from working.", 
+            "title": "It's resistant to failure"
+        }, 
+        {
+            "location": "/#it-knows-where-its-vulnerabilities-are", 
+            "text": "There will always be information available to show where security vulnerabilities are as of the last check-in.", 
+            "title": "It knows where its vulnerabilities are"
+        }, 
+        {
+            "location": "/#it-knows-whats-wrong", 
+            "text": "There will always be information available to show what's happening under the covers, and alert you when they're not quite right.", 
+            "title": "It knows what's wrong"
+        }, 
+        {
+            "location": "/#its-usable-by-anyone-regardless-of-physical-ability-or-language", 
+            "text": "The UI should support screen readers, be flexible in display sizing and use any language including double byte and right to left.", 
+            "title": "It's usable by anyone, regardless of physical ability or language"
+        }, 
+        {
+            "location": "/#architecture", 
+            "text": "", 
+            "title": "Architecture"
+        }, 
+        {
+            "location": "/#components", 
+            "text": "Query", 
+            "title": "Components"
+        }, 
+        {
+            "location": "/#decision-records", 
+            "text": "Record architecture decisions  Implement a query server with graphql", 
+            "title": "Decision records"
+        }, 
+        {
+            "location": "/#setup", 
+            "text": "brew install boot-clj\ngit clone https://github.com/p14n/journal\ncd journal/query\nboot repl  (dev)  (start)  Navigate to http://localhost:8085/query/graphiql/graphiql.html", 
+            "title": "Setup"
+        }, 
+        {
+            "location": "/#documentation", 
+            "text": "This documentation uses mkdocs (configured in mkdocs.yml).  The documentation source is in  ./docsource .  Running  mkdocs build  will generate the documentation in  ./docs", 
+            "title": "Documentation"
+        }, 
+        {
+            "location": "/architecture/decisions/0001-record-architecture-decisions/", 
+            "text": "1. Record architecture decisions\n\n\nDate: 2017-11-21\n\n\nStatus\n\n\nAccepted\n\n\nContext\n\n\nWe need to record the architectural decisions made on this project.\n\n\nDecision\n\n\nWe will use Architecture Decision Records, as described by Michael Nygard in this article: http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions\n\n\nConsequences\n\n\nSee Michael Nygard's article, linked above. For a lightweight ADR toolset, see Nat Pryce's \nadr-tools\n at https://github.com/npryce/adr-tools.", 
+            "title": "1. Record architecture decisions"
+        }, 
+        {
+            "location": "/architecture/decisions/0001-record-architecture-decisions/#1-record-architecture-decisions", 
+            "text": "Date: 2017-11-21", 
+            "title": "1. Record architecture decisions"
+        }, 
+        {
+            "location": "/architecture/decisions/0001-record-architecture-decisions/#status", 
+            "text": "Accepted", 
+            "title": "Status"
+        }, 
+        {
+            "location": "/architecture/decisions/0001-record-architecture-decisions/#context", 
+            "text": "We need to record the architectural decisions made on this project.", 
+            "title": "Context"
+        }, 
+        {
+            "location": "/architecture/decisions/0001-record-architecture-decisions/#decision", 
+            "text": "We will use Architecture Decision Records, as described by Michael Nygard in this article: http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions", 
+            "title": "Decision"
+        }, 
+        {
+            "location": "/architecture/decisions/0001-record-architecture-decisions/#consequences", 
+            "text": "See Michael Nygard's article, linked above. For a lightweight ADR toolset, see Nat Pryce's  adr-tools  at https://github.com/npryce/adr-tools.", 
+            "title": "Consequences"
+        }, 
+        {
+            "location": "/architecture/decisions/0002-use-clojure-graphql-datomic-query-server/", 
+            "text": "2. Use clojure/graphql/datomic query server\n\n\nDate: 2017-11-21\n\n\nStatus\n\n\nProposed\n\n\nCharacteristics addressed\n\n\n\n\nIts user-access agnostic (it's not just a web app)\n\n\nIt's cheap and fast to experiment with\n\n\nIt expects to change\n\n\n\n\nContext\n\n\nThe first thing we want to do is store and read whatever our domain needs. This domain will be changing frequently, so we want to minimise boilerplate that's connected to the domain structure, but we also want to avoid too much magic that will make partially or fully stepping away from this experiement difficult.  Can we create something that allows us to specify our domain in clojure.spec and automatically convert that into Datomic and GraphQL schemas?\n\n\nReferences\n\n\nhttps://github.com/walmartlabs/lacinia\nhttps://github.com/metosin/spec-tools\nhttps://github.com/lab-79/dspec\n\n\nDecision\n\n\nWhy, yes we can!\n\n\nIt was simple to create functions that turned spec into lacinia/datomic schema.  It removes the chore of defining individual attibutes in three places.  It remains to be seen whether it saves time overall or the productivity gain is limited to only simple cases.\n\n\nWe're happy introducing clojure.spec as a system of record as we can transpile to another format easily (as here with lacinia and datomic).\n\n\nGraphQL is a welcome addition with a growing platform-agnostic (but primarily javascript focused) community that doesn't limit how we access the app.\n\n\nConsequences\n\n\n\n\nClojure, datomic and graphql have been adopted for this component\n\n\nOur domain is now currently specified in clojure.spec - it will need to remain there or be created from another format\n\n\nWe're using the boot build tool because we can write functions to define build tasks\n\n\nboot-alt-test gave vastly improved test performance\n\n\n\n\nIncluded but unassessed\n\n\n\n\nhttp-kit\n\n\ncompojure/ring", 
+            "title": "2. Use clojure/graphql/datomic query server"
+        }, 
+        {
+            "location": "/architecture/decisions/0002-use-clojure-graphql-datomic-query-server/#2-use-clojuregraphqldatomic-query-server", 
+            "text": "Date: 2017-11-21", 
+            "title": "2. Use clojure/graphql/datomic query server"
+        }, 
+        {
+            "location": "/architecture/decisions/0002-use-clojure-graphql-datomic-query-server/#status", 
+            "text": "Proposed", 
+            "title": "Status"
+        }, 
+        {
+            "location": "/architecture/decisions/0002-use-clojure-graphql-datomic-query-server/#characteristics-addressed", 
+            "text": "Its user-access agnostic (it's not just a web app)  It's cheap and fast to experiment with  It expects to change", 
+            "title": "Characteristics addressed"
+        }, 
+        {
+            "location": "/architecture/decisions/0002-use-clojure-graphql-datomic-query-server/#context", 
+            "text": "The first thing we want to do is store and read whatever our domain needs. This domain will be changing frequently, so we want to minimise boilerplate that's connected to the domain structure, but we also want to avoid too much magic that will make partially or fully stepping away from this experiement difficult.  Can we create something that allows us to specify our domain in clojure.spec and automatically convert that into Datomic and GraphQL schemas?", 
+            "title": "Context"
+        }, 
+        {
+            "location": "/architecture/decisions/0002-use-clojure-graphql-datomic-query-server/#references", 
+            "text": "https://github.com/walmartlabs/lacinia\nhttps://github.com/metosin/spec-tools\nhttps://github.com/lab-79/dspec", 
+            "title": "References"
+        }, 
+        {
+            "location": "/architecture/decisions/0002-use-clojure-graphql-datomic-query-server/#decision", 
+            "text": "Why, yes we can!  It was simple to create functions that turned spec into lacinia/datomic schema.  It removes the chore of defining individual attibutes in three places.  It remains to be seen whether it saves time overall or the productivity gain is limited to only simple cases.  We're happy introducing clojure.spec as a system of record as we can transpile to another format easily (as here with lacinia and datomic).  GraphQL is a welcome addition with a growing platform-agnostic (but primarily javascript focused) community that doesn't limit how we access the app.", 
+            "title": "Decision"
+        }, 
+        {
+            "location": "/architecture/decisions/0002-use-clojure-graphql-datomic-query-server/#consequences", 
+            "text": "Clojure, datomic and graphql have been adopted for this component  Our domain is now currently specified in clojure.spec - it will need to remain there or be created from another format  We're using the boot build tool because we can write functions to define build tasks  boot-alt-test gave vastly improved test performance", 
+            "title": "Consequences"
+        }, 
+        {
+            "location": "/architecture/decisions/0002-use-clojure-graphql-datomic-query-server/#included-but-unassessed", 
+            "text": "http-kit  compojure/ring", 
+            "title": "Included but unassessed"
+        }, 
+        {
+            "location": "/components/query/", 
+            "text": "Query server\n\n\nDemonstration\n\n\n\n\n\nCode structure\n\n\nAll code is in the subdirectory \nquery\n\n\n\n\napp\n is domain specific - it defines the spec to use in query generation as well as the startup of the application\n\n\njournal\n is framework code for the query server\n\n\njournal/spectool\n is framework code for the query server generation\n\n\n\n\nWhat it does\n\n\nThere are two parts to this component\n\n Query server generation\n\n Query server\n\n\nQuery server generation\n\n\nThe functions defined in \njournal/spectool\n use\n\n clojure.spec definitions\n\n An application schema (a clojure map that adds information to this spec)\n* A map of resolver functions\nto create a lacinia schema (written to \nresources/graphql.edn\n) and a datomic schema (written to \nresources/datomic/*.edn\n)\n\n\nThis action is attached to the boot task \nwrite-schema\n which calls \napp.spec/write-app-schema\n.\n\n\nQuery server\n\n\nThe query server takes the schemas above and starts a datomic instance and http-kit server, using the map of resolver functions to integrate lacinia and datomic.\n\n\nHow to use it\n\n\nbrew install boot-clj\ngit clone https://github.com/p14n/journal\ncd journal/query\n\n\n\nQuery server generation\n\n\nboot write-schema\n\n\n\nQuery server\n\n\nboot repl\n\n (dev)\n\n (start)\n\n\n\nTo run unit tests while developing\n\n\nboot watch-test\n\n\n\nTo reload the server after changes\n\n\n (boot.user/reset)\n\n\n\nNavigate to http://localhost:8085/query/graphiql/graphiql.html\n\n\nTesting\n\n\nboot coverage", 
+            "title": "Query server"
+        }, 
+        {
+            "location": "/components/query/#query-server", 
+            "text": "", 
+            "title": "Query server"
+        }, 
+        {
+            "location": "/components/query/#demonstration", 
+            "text": "", 
+            "title": "Demonstration"
+        }, 
+        {
+            "location": "/components/query/#code-structure", 
+            "text": "All code is in the subdirectory  query   app  is domain specific - it defines the spec to use in query generation as well as the startup of the application  journal  is framework code for the query server  journal/spectool  is framework code for the query server generation", 
+            "title": "Code structure"
+        }, 
+        {
+            "location": "/components/query/#what-it-does", 
+            "text": "There are two parts to this component  Query server generation  Query server", 
+            "title": "What it does"
+        }, 
+        {
+            "location": "/components/query/#query-server-generation", 
+            "text": "The functions defined in  journal/spectool  use  clojure.spec definitions  An application schema (a clojure map that adds information to this spec)\n* A map of resolver functions\nto create a lacinia schema (written to  resources/graphql.edn ) and a datomic schema (written to  resources/datomic/*.edn )  This action is attached to the boot task  write-schema  which calls  app.spec/write-app-schema .", 
+            "title": "Query server generation"
+        }, 
+        {
+            "location": "/components/query/#query-server_1", 
+            "text": "The query server takes the schemas above and starts a datomic instance and http-kit server, using the map of resolver functions to integrate lacinia and datomic.", 
+            "title": "Query server"
+        }, 
+        {
+            "location": "/components/query/#how-to-use-it", 
+            "text": "brew install boot-clj\ngit clone https://github.com/p14n/journal\ncd journal/query", 
+            "title": "How to use it"
+        }, 
+        {
+            "location": "/components/query/#query-server-generation_1", 
+            "text": "boot write-schema", 
+            "title": "Query server generation"
+        }, 
+        {
+            "location": "/components/query/#query-server_2", 
+            "text": "boot repl  (dev)  (start)  To run unit tests while developing  boot watch-test  To reload the server after changes   (boot.user/reset)  Navigate to http://localhost:8085/query/graphiql/graphiql.html", 
+            "title": "Query server"
+        }, 
+        {
+            "location": "/components/query/#testing", 
+            "text": "boot coverage", 
+            "title": "Testing"
+        }
+    ]
+}

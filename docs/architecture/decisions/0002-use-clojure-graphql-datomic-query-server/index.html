@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../../img/favicon.ico">
+  <title>2. Use clojure/graphql/datomic query server - Journal</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "2. Use clojure/graphql/datomic query server";
+    var mkdocs_page_input_path = "architecture/decisions/0002-use-clojure-graphql-datomic-query-server.md";
+    var mkdocs_page_url = "/architecture/decisions/0002-use-clojure-graphql-datomic-query-server/";
+  </script>
+  
+  <script src="../../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../../.." class="icon icon-home"> Journal</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../../..">Journal</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Architecture</span>
+    <ul class="subnav">
+                <li class=" current">
+                    
+    <span class="caption-text">Decisions</span>
+    <ul class="subnav">
+                <li class="toctree-l3">
+                    
+    <a class="" href="../0001-record-architecture-decisions/">1. Record architecture decisions</a>
+                </li>
+                <li class="toctree-l3 current">
+                    
+    <a class="current" href="./">2. Use clojure/graphql/datomic query server</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l4"><a href="#2-use-clojuregraphqldatomic-query-server">2. Use clojure/graphql/datomic query server</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l5" href="#status">Status</a></li>
+        
+            <li><a class="toctree-l5" href="#characteristics-addressed">Characteristics addressed</a></li>
+        
+            <li><a class="toctree-l5" href="#context">Context</a></li>
+        
+            <li><a class="toctree-l5" href="#references">References</a></li>
+        
+            <li><a class="toctree-l5" href="#decision">Decision</a></li>
+        
+            <li><a class="toctree-l5" href="#consequences">Consequences</a></li>
+        
+            <li><a class="toctree-l5" href="#included-but-unassessed">Included but unassessed</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+    </ul>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Components</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../../components/query/">Query</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../..">Journal</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Architecture &raquo;</li>
+        
+      
+        
+          <li>Decisions &raquo;</li>
+        
+      
+    
+    <li>2. Use clojure/graphql/datomic query server</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="2-use-clojuregraphqldatomic-query-server">2. Use clojure/graphql/datomic query server</h1>
+<p>Date: 2017-11-21</p>
+<h2 id="status">Status</h2>
+<p>Proposed</p>
+<h2 id="characteristics-addressed">Characteristics addressed</h2>
+<ul>
+<li>Its user-access agnostic (it's not just a web app)</li>
+<li>It's cheap and fast to experiment with</li>
+<li>It expects to change</li>
+</ul>
+<h2 id="context">Context</h2>
+<p>The first thing we want to do is store and read whatever our domain needs. This domain will be changing frequently, so we want to minimise boilerplate that's connected to the domain structure, but we also want to avoid too much magic that will make partially or fully stepping away from this experiement difficult.  Can we create something that allows us to specify our domain in clojure.spec and automatically convert that into Datomic and GraphQL schemas?</p>
+<h2 id="references">References</h2>
+<p>https://github.com/walmartlabs/lacinia
+https://github.com/metosin/spec-tools
+https://github.com/lab-79/dspec</p>
+<h2 id="decision">Decision</h2>
+<p>Why, yes we can!</p>
+<p>It was simple to create functions that turned spec into lacinia/datomic schema.  It removes the chore of defining individual attibutes in three places.  It remains to be seen whether it saves time overall or the productivity gain is limited to only simple cases.</p>
+<p>We're happy introducing clojure.spec as a system of record as we can transpile to another format easily (as here with lacinia and datomic).</p>
+<p>GraphQL is a welcome addition with a growing platform-agnostic (but primarily javascript focused) community that doesn't limit how we access the app.</p>
+<h2 id="consequences">Consequences</h2>
+<ul>
+<li>Clojure, datomic and graphql have been adopted for this component</li>
+<li>Our domain is now currently specified in clojure.spec - it will need to remain there or be created from another format</li>
+<li>We're using the boot build tool because we can write functions to define build tasks</li>
+<li>boot-alt-test gave vastly improved test performance</li>
+</ul>
+<h2 id="included-but-unassessed">Included but unassessed</h2>
+<ul>
+<li>http-kit</li>
+<li>compojure/ring</li>
+</ul>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../../components/query/" class="btn btn-neutral float-right" title="Query">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../0001-record-architecture-decisions/" class="btn btn-neutral" title="1. Record architecture decisions"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../0001-record-architecture-decisions/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../../components/query/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '../../..';</script>
+    <script src="../../../js/theme.js"></script>
+      <script src="../../../search/require.js"></script>
+      <script src="../../../search/search.js"></script>
+
+</body>
+</html>

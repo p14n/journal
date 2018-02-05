@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>Query server - Journal</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Query server";
+    var mkdocs_page_input_path = "components/query.md";
+    var mkdocs_page_url = "/components/query/";
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> Journal</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">Journal</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Architecture</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <span class="caption-text">Decisions</span>
+    <ul class="subnav">
+                <li class="toctree-l3">
+                    
+    <a class="" href="../../architecture/decisions/0001-record-architecture-decisions/">1. Record architecture decisions</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../../architecture/decisions/0002-use-clojure-graphql-datomic-query-server/">2. Use clojure/graphql/datomic query server</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Components</span>
+    <ul class="subnav">
+                <li class=" current">
+                    
+    <a class="current" href="./">Query server</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#query-server">Query server</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#demonstration">Demonstration</a></li>
+        
+            <li><a class="toctree-l4" href="#code-structure">Code structure</a></li>
+        
+            <li><a class="toctree-l4" href="#what-it-does">What it does</a></li>
+        
+            <li><a class="toctree-l4" href="#how-to-use-it">How to use it</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">Journal</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Components &raquo;</li>
+        
+      
+    
+    <li>Query server</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="query-server">Query server</h1>
+<h2 id="demonstration">Demonstration</h2>
+<iframe allowFullScreen frameborder="0" height="564" mozallowfullscreen src="https://player.vimeo.com/video/254140938" webkitAllowFullScreen width="640"></iframe>
+
+<h2 id="code-structure">Code structure</h2>
+<p>All code is in the subdirectory <code>query</code></p>
+<ul>
+<li><code>app</code> is domain specific - it defines the spec to use in query generation as well as the startup of the application</li>
+<li><code>journal</code> is framework code for the query server</li>
+<li><code>journal/spectool</code> is framework code for the query server generation</li>
+</ul>
+<h2 id="what-it-does">What it does</h2>
+<p>There are two parts to this component
+<em> Query server generation
+</em> Query server</p>
+<h3 id="query-server-generation">Query server generation</h3>
+<p>The functions defined in <code>journal/spectool</code> use
+<em> clojure.spec definitions
+</em> An application schema (a clojure map that adds information to this spec)
+* A map of resolver functions
+to create a lacinia schema (written to <code>resources/graphql.edn</code>) and a datomic schema (written to <code>resources/datomic/*.edn</code>)</p>
+<p>This action is attached to the boot task <code>write-schema</code> which calls <code>app.spec/write-app-schema</code>.</p>
+<h3 id="query-server_1">Query server</h3>
+<p>The query server takes the schemas above and starts a datomic instance and http-kit server, using the map of resolver functions to integrate lacinia and datomic.</p>
+<h2 id="how-to-use-it">How to use it</h2>
+<pre><code>brew install boot-clj
+git clone https://github.com/p14n/journal
+cd journal/query
+</code></pre>
+<h3 id="query-server-generation_1">Query server generation</h3>
+<pre><code>boot write-schema
+</code></pre>
+<h3 id="query-server_2">Query server</h3>
+<pre><code>boot repl
+&gt; (dev)
+&gt; (start)
+</code></pre>
+<p>To run unit tests while developing</p>
+<pre><code>boot watch-test
+</code></pre>
+<p>To reload the server after changes</p>
+<pre><code>&gt; (boot.user/reset)
+</code></pre>
+<p>Navigate to http://localhost:8085/query/graphiql/graphiql.html</p>
+<h3 id="testing">Testing</h3>
+<pre><code>boot coverage
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="../../architecture/decisions/0002-use-clojure-graphql-datomic-query-server/" class="btn btn-neutral" title="2. Use clojure/graphql/datomic query server"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../../architecture/decisions/0002-use-clojure-graphql-datomic-query-server/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+    </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/require.js"></script>
+      <script src="../../search/search.js"></script>
+
+</body>
+</html>
