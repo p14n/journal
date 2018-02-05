@@ -2,7 +2,7 @@
 
 ## Demonstration
 
-<iframe allowFullScreen frameborder="0" height="564" mozallowfullscreen src="https://player.vimeo.com/video/254140938" webkitAllowFullScreen width="640"></iframe>
+<iframe allowFullScreen frameborder="0" height="564" mozallowfullscreen src="https://player.vimeo.com/video/254346824" webkitAllowFullScreen width="640"></iframe>
 
 ## Code structure
 
