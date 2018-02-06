@@ -33,13 +33,16 @@
     (log logger merged-msg)))
 
 (defn debug [logger service msg]
-  (log-msg-or-description logger service :debug msg nil))
+  (log-msg-or-description logger service :debug msg nil)
+  msg)
 
 (defn info [logger service msg]
-  (log-msg-or-description logger service :info msg nil))
+  (log-msg-or-description logger service :info msg nil)
+  msg)
 
 (defn warn [logger service msg]
-  (log-msg-or-description logger service :warn msg nil))
+  (log-msg-or-description logger service :warn msg nil)
+  msg)
 
 (defn error 
   ([logger service msg] (error logger service msg nil))

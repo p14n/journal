@@ -9,7 +9,6 @@
 
 (defn startapp[]
   (let [db-install (install-base-schema conn)
-        x (println db-install)
         gql-schema (g/graphql-schema-from-edn-file "resources/graphql.edn" (as/resolver-map))
         httpserver (http/start-server gql-schema)]
     {:http httpserver}))

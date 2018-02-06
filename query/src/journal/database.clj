@@ -53,12 +53,11 @@
   (map #(replace-id-in-result % is-id?) res))
 
 (defn run-query [db {pattern :pattern lookup :lookup}]
-  (println (str "pattern/lookup "  pattern lookup))
   (let [res (if (nil? lookup)
               (map first (d/q pattern db))
               (let [maybe-one (d/pull db pattern lookup)]
-                (if (nil? maybe-one) [] [maybe-one]))) 
-        x (println res)] res))
+                (if (nil? maybe-one) [] [maybe-one])))] 
+  res))
 
 (defn to-where [object-name args entity-symbol is-id?]
   (map (fn[[k v]](if (is-id? k)
@@ -89,7 +88,6 @@
                        tx-data
                        (assoc tx-data :db/id maybe-id))
         data-as-vec (vec (flatten (vec data-with-id)))
-        ;;xxx (println data-with-id)
         tx @(d/transact con [data-with-id])]
     (if had-id (assoc tx :ID (tx-data :db/id))
         (assoc tx :ID (d/resolve-tempid (d/db con) (:tempids tx) maybe-id)))))

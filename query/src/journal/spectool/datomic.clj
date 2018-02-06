@@ -22,7 +22,6 @@
    (contains? (set field) 'clojure.spec.alpha/coll-of)))
 
 (defn create-datomic-field[ns name ismany type unique]
-  (println unique)
   (merge (if unique {  :db/unique :db.unique/identity } {})
          {
           ;;:db/id #db/id[:db.part/db]
