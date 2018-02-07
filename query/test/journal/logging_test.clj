@@ -1,6 +1,6 @@
 (ns journal.logging-test
   (:use journal.logging
-  		clojure.test)
+  		  clojure.test)
   (:import journal.logging.TestLogger))
 
 
@@ -13,7 +13,7 @@
 
 (use-fixtures :each log-fixture)
 
-(deftest log-at-info
+(deftest ^:skip-coverage log-at-info
   (testing "Logging at info"
   	(info logger :namespace/component "hi")
     (is (= {:body {:desc "hi"}, :level :info, :service :namespace/component}
@@ -22,7 +22,7 @@
     (is (= {:body {:thing "hi"}, :level :info, :service :namespace/component}
            (second @logs)))))
 
-(deftest log-at-error
+(deftest ^:skip-coverage log-at-error
   (testing "Logging at error"
   	(error logger :namespace/component "hi")
     (is (= {:body {:desc "hi"}, :level :error, :service :namespace/component}
@@ -31,7 +31,7 @@
     (is (= {:body {:thing "hi"}, :level :error, :service :namespace/component}
            (second @logs)))))
 
-(deftest log-at-debug
+(deftest ^:skip-coverage log-at-debug
   (testing "Logging at debug"
   	(debug logger :namespace/component "hi")
     (is (= {:body {:desc "hi"}, :level :debug, :service :namespace/component}
