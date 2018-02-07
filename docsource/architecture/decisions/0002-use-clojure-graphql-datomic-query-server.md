@@ -4,7 +4,7 @@ Date: 2017-11-21
 
 ## Status
 
-Proposed
+Accepted
 
 ## Characteristics addressed
 
