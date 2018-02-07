@@ -35,9 +35,9 @@
   (comp (watch) (alt-test :filter 'testing/not-integration)))
 
 (deftask coverage "Runs tests with coverage" []
-  (set-env! :source-paths #{"src" "test"}
+  (set-env! :source-paths #{"src" "test" "util"}
             :resource-paths #{"resources" "test-resources"})
-  (alt-test "-c"))
+  (alt-test "-c" :filter 'testing/skip-coverage))
 
 (deftask check-sources []
   (set-env! :source-paths #{"src" "test"})

@@ -11,7 +11,10 @@
 (deftest transaction-creation
   (testing "Check transaction data is correctly created"
     (is (= { :Person/email "dean@p14n.com" }
-           (sut/to-tx-data "Person" {:email "dean@p14n.com"})))))
+           (sut/to-tx-data "Person" nil? {:email "dean@p14n.com"}))))
+  (testing "Check transaction data is correctly created with id"
+    (is (= { :db/id 10 }
+           (sut/to-tx-data "Person" #(= % :ID) {:ID "10"})))))
 
 (def sample-selection-tree
   {:Person/email nil,

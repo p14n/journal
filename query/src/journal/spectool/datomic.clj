@@ -3,11 +3,6 @@
         [datomic.api :only [q db] :as d]
         [clojure.string :only [join]]))
 
-;;look at objects
-;;object name becomes namespace
-;;field name is item name
-;;type is type
-
 (defn datomic-type[field object-set]
   (cond
     (coll? field) (first (remove nil? (map #(datomic-type % object-set) field)))
@@ -22,7 +17,6 @@
    (contains? (set field) 'clojure.spec.alpha/coll-of)))
 
 (defn create-datomic-field[ns name ismany type unique]
-  (println unique)
   (merge (if unique {  :db/unique :db.unique/identity } {})
          {
           ;;:db/id #db/id[:db.part/db]
