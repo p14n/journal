@@ -31,5 +31,5 @@
           (route/files "/" {:root "/Users/p14n/dev/ws/journal/"})
           (route/not-found "Nope"))
          (wrap-json-body {:keywords? true :bigdecimals? true}))
-     {:port 8085})))
+     {:port (l/info l/systemlog :startup/http 8085) })))
 

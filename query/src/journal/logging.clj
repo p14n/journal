@@ -8,13 +8,11 @@
   (reify Logger
     (log [this msg] (log logger (f msg)))))
 
-
 (defrecord TestLogger [logs] Logger
   (log [this msg] (swap! logs conj msg)))
 
 (defrecord StdoutLogger [] Logger
   (log [this msg] (println msg)))
-
 
 (defstate systemlog :start (StdoutLogger.))
 
@@ -28,7 +26,7 @@
 
 (defn log-msg-or-description [logger service level msg exception]
   (let [merged-msg (merge {:service service :level level} 
-                          (if (map? msg) msg {:desc msg})
+                          {:body (if (map? msg) msg {:desc msg})}
                           (if exception { :stacktrace (stacktrace exception)} {}))]
     (log logger merged-msg)))
 

@@ -23,7 +23,7 @@
     (try (->> args
               (to-tx-data object-name is-id?)
               (l/info logger :graphql/mutate) 
-              (upsert-entity con)
+              (upsert-entity logger con)
               (#(resolve-entity (:db-after %) (:ID %)))
               (keyname-only)
               (l/info logger :graphql/mutate-response))

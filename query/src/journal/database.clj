@@ -1,22 +1,23 @@
 (ns journal.database
   (:require [datomic.api :only [q db] :as d]
             [mount.core :refer [defstate start]]
-            [clojure.java.io :refer [file]]))
+            [clojure.java.io :refer [file]]
+            [journal.logging :as l]))
 
 (defn install-base-schema-file[conn file]
-  @(d/transact
-    conn (read-string (slurp file))))
-
+  (do 
+    (l/info l/systemlog :startup/datomic (str "Install schema " file ))
+    (l/info l/systemlog :startup/datomic @(d/transact conn (read-string (slurp file))))))
+  
 (defn install-base-schema [conn]
   (let [dir (file "./resources/datomic")
         files (rest (file-seq dir))]
-    (map #(install-base-schema-file conn (.getPath %)) files)))
+    (doall (map #(install-base-schema-file conn (.getPath %)) files))))
 
 (defn setup-and-connect-to-db [uri]
-  (do (d/create-database uri)
-      (let [conn (d/connect uri)]
-        (install-base-schema conn)
-        conn)))
+  (do (l/info l/systemlog :startup/datomic (str "Starting Datomic at " uri))
+      (d/create-database uri)
+      (d/connect uri)))
 
 (defn close-db []
   (do (d/shutdown false)))
@@ -81,14 +82,14 @@
 
 (defn upsert-entity
   "Takes transaction data and returns the resolved tempid"
-  [con tx-data]
+  [logger con tx-data]
   (let [had-id (contains? tx-data :db/id)
         maybe-id (d/tempid :db.part/user)
         data-with-id (if had-id
                        tx-data
                        (assoc tx-data :db/id maybe-id))
-        data-as-vec (vec (flatten (vec data-with-id)))
-        tx @(d/transact con [data-with-id])]
+        data-as-vec (l/info logger :datomic/upsert (vec (flatten (vec data-with-id))))
+        tx (l/info logger :datomic/upsert-response @(d/transact con [data-with-id]))]
     (if had-id (assoc tx :ID (tx-data :db/id))
         (assoc tx :ID (d/resolve-tempid (d/db con) (:tempids tx) maybe-id)))))
 
