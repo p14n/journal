@@ -30,9 +30,9 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "query/build.boot" }}
+          - project-{{checksum "query/boot.properties" }}-{{ checksum "query/build.boot" }}
           # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
+          - project-
 
       - run:
           command: |
@@ -41,8 +41,11 @@ jobs:
 
       - save_cache:
           paths:
+          paths:
             - ~/.m2
-          key: v1-dependencies-{{ checksum "query/build.boot" }}
+            - ~/.boot/cache/lib
+            - ~/.boot/cache/bin
+          key: project-{{checksum "query/boot.properties" }}-{{ checksum "query/build.boot" }}
         
       # run tests!
       - run:
