@@ -47,3 +47,7 @@ jobs:
           command: |
             cd query
             boot coverage
+      - store_test_results:
+          path: ~/query/target/coverage/journal/
+      - store_artifacts:
+          path: ~/query/target/coverage/journal/
