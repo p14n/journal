@@ -47,6 +47,6 @@ jobs:
           command: |
             cd query
             boot coverage
-            cp -R target/coverage/journal ~/coverage
+            cp -R target/coverage ~/coverage
       - store_artifacts:
           path: ~/coverage/
