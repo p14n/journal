@@ -1,6 +1,8 @@
 Journal
 =============
 
+[![CircleCI](https://circleci.com/gh/p14n/journal/tree/develop.svg?style=svg)](https://circleci.com/gh/p14n/journal/tree/develop)
+
 ## What is this repo?
 
 This repository is a place to experiment and document experimentation so I can
