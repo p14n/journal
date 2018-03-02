@@ -38,7 +38,7 @@
 (defn collect-outputs! [lifecycles output-tasks]
   (->> output-tasks
        (map #(get-output-channel (channel-id-for lifecycles %)))
-       (map take-segments!)
+       (map #(take-segments! % 1000))
        (zipmap output-tasks)))
 
 (defn inject-in-ch [event lifecycle]
