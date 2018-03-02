@@ -1,4 +1,4 @@
-(ns journal-command.workflow)
+(ns command.workflow)
 
 (def workflow
   [[:in :thing]

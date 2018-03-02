@@ -1,4 +1,4 @@
-(ns journal-command.catalog)
+(ns command.catalog)
 
 (defn thing [segment]
 	(:thing 1))

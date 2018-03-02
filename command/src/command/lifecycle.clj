@@ -1,4 +1,4 @@
-(ns journal-command.lifecycle
+(ns command.lifecycle
 	(:require [clojure.core.async :refer [chan sliding-buffer >!!]]
             [onyx.plugin.core-async :refer [take-segments!]]
             [onyx.static.planning :refer [find-task]]))

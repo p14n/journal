@@ -1,4 +1,4 @@
-(ns journal-command.system
+(ns command.system
 	 (:require [clojure.core.async :refer [chan <!!]]
             [clojure.java.io :refer [resource]]
             [mount.core :refer [defstate start stop]]
@@ -7,7 +7,8 @@
 
 (defn startapp[]
   (println "Starting Onyx development environment")
-    (let [onyx-id (java.util.UUID/randomUUID)
+    (let [n-peers 1
+          onyx-id (java.util.UUID/randomUUID)
           env-config (assoc (-> "env-config.edn" resource slurp read-string)
                             :onyx/tenancy-id onyx-id)
           peer-config (assoc (-> "dev-peer-config.edn"
@@ -27,7 +28,7 @@
     (onyx.api/shutdown-peer-group (:peer-group component))
     (onyx.api/shutdown-env (:env component))
 
-    (assoc component :env nil :peer-group nil :peers nil)))
+    (assoc component :env nil :peer-group nil :peers nil))
 
 (defstate app-state
   :start (startapp)
