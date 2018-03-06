@@ -11,7 +11,7 @@
 
 (defn startapp[]
   (println "Starting Onyx development environment")
-    (let [n-peers 1
+    (let [n-peers 3
           onyx-id (java.util.UUID/randomUUID)
           env-config (assoc (-> "env-config.edn" resource slurp read-string)
                             :onyx/tenancy-id onyx-id)
@@ -55,11 +55,12 @@
                :lifecycles dev-lifecycles
                :flow-conditions sf/flow-conditions
                :task-scheduler :onyx.task-scheduler/balanced}]
+      (println job)
       (onyx.api/submit-job peer-config job)
       ;; Automatically grab output from the stubbed core.async channels,
       ;; returning a vector of the results with data structures representing
       ;; the output.
-      (sl/collect-outputs! dev-lifecycles [:loud-output :question-output]))))
+      (sl/collect-outputs! dev-lifecycles [:out]))))
 
 
 (defn -main [& args]

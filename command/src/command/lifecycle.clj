@@ -7,6 +7,8 @@
 
 (def output-channel-capacity (inc input-channel-capacity))
 
+(def input-buffer (atom {}))
+
 ;;; A pair of functions to get channels from a memoized reference.
 ;;; We memoize it by requested ID because we want to get a reference
 ;;; to read and write segments, and also so that peers can locate a reference
@@ -32,8 +34,7 @@
   (doseq [[task segments] mapping]
     (let [in-ch (get-input-channel (channel-id-for lifecycles task))]
       (doseq [segment segments]
-        (>!! in-ch segment))
-      (>!! in-ch :done))))
+        (>!! in-ch segment)))))
 
 (defn collect-outputs! [lifecycles output-tasks]
   (->> output-tasks
@@ -42,7 +43,8 @@
        (zipmap output-tasks)))
 
 (defn inject-in-ch [event lifecycle]
-  {:core.async/chan (get-input-channel (:core.async/id lifecycle))})
+  {:core.async/buffer input-buffer
+   :core.async/chan (get-input-channel (:core.async/id lifecycle))})
 
 (defn inject-out-ch [event lifecycle]
   {:core.async/chan (get-output-channel (:core.async/id lifecycle))})
@@ -56,11 +58,11 @@
 (defn build-lifecycles []
   [{:lifecycle/task :in
     :core.async/id (java.util.UUID/randomUUID)
-    :lifecycle/calls :journal-command.lifecycle/in-calls}
+    :lifecycle/calls :command.lifecycle/in-calls}
    {:lifecycle/task :in
     :lifecycle/calls :onyx.plugin.core-async/reader-calls}
    {:lifecycle/task :out
-    :lifecycle/calls :journal-command.lifecycle/out-calls
+    :lifecycle/calls :command.lifecycle/out-calls
     :core.async/id (java.util.UUID/randomUUID)
     :lifecycle/doc "Lifecycle for writing to a core.async chan"}
    {:lifecycle/task :out

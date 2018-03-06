@@ -1,7 +1,8 @@
 (ns command.catalog)
 
 (defn thing [segment]
-	(:thing 1))
+  (do (println segment)
+      segment))
 
 (defn build-catalog [batch-size batch-timeout]
   [{:onyx/name :in
@@ -14,7 +15,7 @@
     :onyx/doc "Reads segments from a core.async channel"}
 
    {:onyx/name :thing
-    :onyx/fn :journal-command.catalog/thing
+    :onyx/fn :command.catalog/thing
     :onyx/type :function
     :onyx/batch-timeout batch-timeout
     :onyx/batch-size batch-size}
