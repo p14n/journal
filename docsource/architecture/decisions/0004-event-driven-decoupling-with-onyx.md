@@ -21,7 +21,16 @@ https://github.com/Yuppiechef/cqrs-server
 
 ## Decision
 
-Decision here...
+query
+ - direct to datomic
+
+mutation
+ - send to onyx
+ - wait for response and perform query if necessary
+ 
+ :in :command
+ :command :response
+ 
 
 ## Consequences
 

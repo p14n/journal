@@ -1,3 +1,4 @@
+
 (set-env!
   :project 'journal-command
   :version "0.0.1-SNAPSHOT"
@@ -15,18 +16,3 @@
                   [boot/core              "2.7.2"           :scope "provided"]
                   ])
 
-(require '[clojure.tools.namespace.repl :refer [set-refresh-dirs refresh] :as tn]
-         '[mount.core :refer [start stop]])
-
-(deftask dev []
-  (set-env! :source-paths #(conj % "src"))
-
-  (apply tn/set-refresh-dirs (get-env :directories))
-  (load-data-readers!)
-
-  (require 'command.system)
-  (in-ns 'command.system))
-
-(deftask reset []
-  (stop)
-  (tn/refresh :after 'mount.core/start))
