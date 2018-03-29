@@ -122,7 +122,7 @@
         }, 
         {
             "location": "/architecture/decisions/0002-use-clojure-graphql-datomic-query-server/", 
-            "text": "2. Use clojure/graphql/datomic query server\n\n\nDate: 2017-11-21\n\n\nStatus\n\n\nProposed\n\n\nCharacteristics addressed\n\n\n\n\nIts user-access agnostic (it's not just a web app)\n\n\nIt's cheap and fast to experiment with\n\n\nIt expects to change\n\n\n\n\nContext\n\n\nThe first thing we want to do is store and read whatever our domain needs. This domain will be changing frequently, so we want to minimise boilerplate that's connected to the domain structure, but we also want to avoid too much magic that will make partially or fully stepping away from this experiement difficult.  Can we create something that allows us to specify our domain in clojure.spec and automatically convert that into Datomic and GraphQL schemas?\n\n\nReferences\n\n\nhttps://github.com/walmartlabs/lacinia\nhttps://github.com/metosin/spec-tools\nhttps://github.com/lab-79/dspec\n\n\nDecision\n\n\nWhy, yes we can!\n\n\nIt was simple to create functions that turned spec into lacinia/datomic schema.  It removes the chore of defining individual attibutes in three places.  It remains to be seen whether it saves time overall or the productivity gain is limited to only simple cases.\n\n\nWe're happy introducing clojure.spec as a system of record as we can transpile to another format easily (as here with lacinia and datomic).\n\n\nGraphQL is a welcome addition with a growing platform-agnostic (but primarily javascript focused) community that doesn't limit how we access the app.\n\n\nConsequences\n\n\n\n\nClojure, datomic and graphql have been adopted for this component\n\n\nOur domain is now currently specified in clojure.spec - it will need to remain there or be created from another format\n\n\nWe're using the boot build tool because we can write functions to define build tasks\n\n\nboot-alt-test gave vastly improved test performance\n\n\n\n\nIncluded but unassessed\n\n\n\n\nhttp-kit\n\n\ncompojure/ring", 
+            "text": "2. Use clojure/graphql/datomic query server\n\n\nDate: 2017-11-21\n\n\nStatus\n\n\nAccepted\n\n\nCharacteristics addressed\n\n\n\n\nIts user-access agnostic (it's not just a web app)\n\n\nIt's cheap and fast to experiment with\n\n\nIt expects to change\n\n\n\n\nContext\n\n\nThe first thing we want to do is store and read whatever our domain needs. This domain will be changing frequently, so we want to minimise boilerplate that's connected to the domain structure, but we also want to avoid too much magic that will make partially or fully stepping away from this experiement difficult.  Can we create something that allows us to specify our domain in clojure.spec and automatically convert that into Datomic and GraphQL schemas?\n\n\nReferences\n\n\nhttps://github.com/walmartlabs/lacinia\nhttps://github.com/metosin/spec-tools\nhttps://github.com/lab-79/dspec\n\n\nDecision\n\n\nWhy, yes we can!\n\n\nIt was simple to create functions that turned spec into lacinia/datomic schema.  It removes the chore of defining individual attibutes in three places.  It remains to be seen whether it saves time overall or the productivity gain is limited to only simple cases.\n\n\nWe're happy introducing clojure.spec as a system of record as we can transpile to another format easily (as here with lacinia and datomic).\n\n\nGraphQL is a welcome addition with a growing platform-agnostic (but primarily javascript focused) community that doesn't limit how we access the app.\n\n\nConsequences\n\n\n\n\nClojure, datomic and graphql have been adopted for this component\n\n\nOur domain is now currently specified in clojure.spec - it will need to remain there or be created from another format\n\n\nWe're using the boot build tool because we can write functions to define build tasks\n\n\nboot-alt-test gave vastly improved test performance\n\n\n\n\nIncluded but unassessed\n\n\n\n\nhttp-kit\n\n\ncompojure/ring", 
             "title": "2. Use clojure/graphql/datomic query server"
         }, 
         {
@@ -132,7 +132,7 @@
         }, 
         {
             "location": "/architecture/decisions/0002-use-clojure-graphql-datomic-query-server/#status", 
-            "text": "Proposed", 
+            "text": "Accepted", 
             "title": "Status"
         }, 
         {
@@ -164,6 +164,41 @@
             "location": "/architecture/decisions/0002-use-clojure-graphql-datomic-query-server/#included-but-unassessed", 
             "text": "http-kit  compojure/ring", 
             "title": "Included but unassessed"
+        }, 
+        {
+            "location": "/architecture/decisions/0003-add-logging-as-a-first-class-citizen/", 
+            "text": "3. Add logging as a first-class citizen\n\n\nDate: 2018-02-05\n\n\nStatus\n\n\nAccepted\n\n\nCharacteristics addressed\n\n\n\n\nIt always knows what happened\n\n\n\n\nContext\n\n\nWhile working on the query component, no decision was made about logging and the code ended up with many \nprintln\n statements trying to debug.  This needed addressing, and I wanted to start of with a clear direction for application logging.  Prior art available at:\n\n\nhttps://juxt.pro/blog/posts/logging.html\n\n\nDecision\n\n\nThe approach Juxt took passes a logger down the stack explicity.  I'm happy with this approach as in practice that only affected the API of a few functions.  It keeps the implmentation very simple and leaves us agnostic about where logs will be stored.\n\n\nConsequences\n\n\nWe now have detailed logging at INFO at the system boundaries, namespaced by area.\n\n\n        {:service :graphql/mutate, :level :info, :body {:Person/email dan@p14n.com, :Person/firstname Decan}, :reqid 0}\n        {:service :datomic/upsert, :level :info, :body {:desc [:Person/email dan@p14n.com :Person/firstname Decan :db/id #db/id[:db.part/user -1000038]]}, :reqid 0}\n\n\n\n\nA logger is created at the network boundary that will add a request id for tracking to the log.  The request id is currently generated on the server - in the future this should be defaulted to one provided by the client.", 
+            "title": "3. Add logging as a first-class citizen"
+        }, 
+        {
+            "location": "/architecture/decisions/0003-add-logging-as-a-first-class-citizen/#3-add-logging-as-a-first-class-citizen", 
+            "text": "Date: 2018-02-05", 
+            "title": "3. Add logging as a first-class citizen"
+        }, 
+        {
+            "location": "/architecture/decisions/0003-add-logging-as-a-first-class-citizen/#status", 
+            "text": "Accepted", 
+            "title": "Status"
+        }, 
+        {
+            "location": "/architecture/decisions/0003-add-logging-as-a-first-class-citizen/#characteristics-addressed", 
+            "text": "It always knows what happened", 
+            "title": "Characteristics addressed"
+        }, 
+        {
+            "location": "/architecture/decisions/0003-add-logging-as-a-first-class-citizen/#context", 
+            "text": "While working on the query component, no decision was made about logging and the code ended up with many  println  statements trying to debug.  This needed addressing, and I wanted to start of with a clear direction for application logging.  Prior art available at:  https://juxt.pro/blog/posts/logging.html", 
+            "title": "Context"
+        }, 
+        {
+            "location": "/architecture/decisions/0003-add-logging-as-a-first-class-citizen/#decision", 
+            "text": "The approach Juxt took passes a logger down the stack explicity.  I'm happy with this approach as in practice that only affected the API of a few functions.  It keeps the implmentation very simple and leaves us agnostic about where logs will be stored.", 
+            "title": "Decision"
+        }, 
+        {
+            "location": "/architecture/decisions/0003-add-logging-as-a-first-class-citizen/#consequences", 
+            "text": "We now have detailed logging at INFO at the system boundaries, namespaced by area.          {:service :graphql/mutate, :level :info, :body {:Person/email dan@p14n.com, :Person/firstname Decan}, :reqid 0}\n        {:service :datomic/upsert, :level :info, :body {:desc [:Person/email dan@p14n.com :Person/firstname Decan :db/id #db/id[:db.part/user -1000038]]}, :reqid 0}  A logger is created at the network boundary that will add a request id for tracking to the log.  The request id is currently generated on the server - in the future this should be defaulted to one provided by the client.", 
+            "title": "Consequences"
         }, 
         {
             "location": "/components/query/", 
