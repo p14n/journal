@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../../img/favicon.ico">
-  <title>1. Record architecture decisions - Journal</title>
+  <title>5. CI builds with CircleCI - Journal</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../../css/theme.css" type="text/css" />
@@ -17,9 +17,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "1. Record architecture decisions";
-    var mkdocs_page_input_path = "architecture/decisions/0001-record-architecture-decisions.md";
-    var mkdocs_page_url = "/architecture/decisions/0001-record-architecture-decisions/";
+    var mkdocs_page_name = "5. CI builds with CircleCI";
+    var mkdocs_page_input_path = "architecture/decisions/0005-ci-builds-with-circleci.md";
+    var mkdocs_page_url = "/architecture/decisions/0005-ci-builds-with-circleci/";
   </script>
   
   <script src="../../../js/jquery-2.1.1.min.js"></script>
@@ -60,12 +60,28 @@
                     
     <span class="caption-text">Decisions</span>
     <ul class="subnav">
+                <li class="toctree-l3">
+                    
+    <a class="" href="../0001-record-architecture-decisions/">1. Record architecture decisions</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../0002-use-clojure-graphql-datomic-query-server/">2. Use clojure/graphql/datomic query server</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../0003-add-logging-as-a-first-class-citizen/">3. Add logging as a first-class citizen</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../0004-event-driven-decoupling-with-onyx/">4. Event-driven decoupling with Onyx</a>
+                </li>
                 <li class="toctree-l3 current">
                     
-    <a class="current" href="./">1. Record architecture decisions</a>
+    <a class="current" href="./">5. CI builds with CircleCI</a>
     <ul class="subnav">
             
-    <li class="toctree-l4"><a href="#1-record-architecture-decisions">1. Record architecture decisions</a></li>
+    <li class="toctree-l4"><a href="#5-ci-builds-with-circleci">5. CI builds with CircleCI</a></li>
     
         <ul>
         
@@ -81,22 +97,6 @@
     
 
     </ul>
-                </li>
-                <li class="toctree-l3">
-                    
-    <a class="" href="../0002-use-clojure-graphql-datomic-query-server/">0002 use clojure graphql datomic query server</a>
-                </li>
-                <li class="toctree-l3">
-                    
-    <a class="" href="../0003-add-logging-as-a-first-class-citizen/">0003 add logging as a first class citizen</a>
-                </li>
-                <li class="toctree-l3">
-                    
-    <a class="" href="../0004-event-driven-decoupling-with-onyx/">0004 event driven decoupling with onyx</a>
-                </li>
-                <li class="toctree-l3">
-                    
-    <a class="" href="../0005-ci-builds-with-circleci/">0005 ci builds with circleci</a>
                 </li>
     </ul>
                 </li>
@@ -144,7 +144,7 @@
         
       
     
-    <li>1. Record architecture decisions</li>
+    <li>5. CI builds with CircleCI</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -154,16 +154,17 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="1-record-architecture-decisions">1. Record architecture decisions</h1>
-<p>Date: 2017-11-21</p>
+                <h1 id="5-ci-builds-with-circleci">5. CI builds with CircleCI</h1>
+<p>Date: 2018-02-22</p>
 <h2 id="status">Status</h2>
 <p>Accepted</p>
 <h2 id="context">Context</h2>
-<p>We need to record the architectural decisions made on this project.</p>
+<p>The query server introduced some automated tests we want to keep maintained and passing, and I'd like one of those little <passing> badges, and a place to publish our coverage reports. Onyx is probably about to make our deployment a bit more complex so it would be good to have something that can deploy to a cloud server.  Having seen first hand how complex Jenkins can get I am drawn towards CI/CD servers that rely entirely on a file in the repository for configuration.  I've recently had experience with circleci and particularly liked the ability to run local builds when testing.</p>
 <h2 id="decision">Decision</h2>
-<p>We will use Architecture Decision Records, as described by Michael Nygard in this article: http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions</p>
+<p>We'll go with circleci for now - it was simple to set up and will be simple to leave if it doesn't fit the bill later.  If we were running a server locally I'd look at https://concourse.ci/</p>
 <h2 id="consequences">Consequences</h2>
-<p>See Michael Nygard's article, linked above. For a lightweight ADR toolset, see Nat Pryce's <em>adr-tools</em> at https://github.com/npryce/adr-tools.</p>
+<p>The documentation can be found here: https://circleci.com/docs/2.0/
+The configuration file is in ./circleci/config.yml.  You can click on the badge to see the build runs.</p>
               
             </div>
           </div>
@@ -171,10 +172,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../0002-use-clojure-graphql-datomic-query-server/" class="btn btn-neutral float-right" title="0002 use clojure graphql datomic query server">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../../../components/query/" class="btn btn-neutral float-right" title="Query">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../../.." class="btn btn-neutral" title="Journal"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../0004-event-driven-decoupling-with-onyx/" class="btn btn-neutral" title="4. Event-driven decoupling with Onyx"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -200,10 +201,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../../.." style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../0004-event-driven-decoupling-with-onyx/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../0002-use-clojure-graphql-datomic-query-server/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../../../components/query/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

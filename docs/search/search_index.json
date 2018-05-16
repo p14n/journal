@@ -201,6 +201,71 @@
             "title": "Consequences"
         }, 
         {
+            "location": "/architecture/decisions/0004-event-driven-decoupling-with-onyx/", 
+            "text": "4. Event-driven decoupling with Onyx\n\n\nDate: 2018-02-07\n\n\nStatus\n\n\nProposed\n\n\nCharacteristics addressed\n\n\n\n\nIt's got X-Factor scale (yes, the TV show)\n\n\nIt always knows what happened\n\n\nIt expects to change\n\n\nIt's resistant to failure\n\n\n\n\nContext\n\n\nThe main driver for moving to an event-driven architecture is flexibility - when everything is an event, more parts of the application can be added that simply listen out for those events, and perform their own actions with them.  Where we'd like to take this further is to store these events forever, meaning at any point we can add a new component and replay the data from the applications inception.  There are examples of this having been experimented with, such as \n\n\nhttps://github.com/Yuppiechef/cqrs-server\n\n\nDecision\n\n\nDecision here...\n\n\nConsequences\n\n\nConsequences here...", 
+            "title": "4. Event-driven decoupling with Onyx"
+        }, 
+        {
+            "location": "/architecture/decisions/0004-event-driven-decoupling-with-onyx/#4-event-driven-decoupling-with-onyx", 
+            "text": "Date: 2018-02-07", 
+            "title": "4. Event-driven decoupling with Onyx"
+        }, 
+        {
+            "location": "/architecture/decisions/0004-event-driven-decoupling-with-onyx/#status", 
+            "text": "Proposed", 
+            "title": "Status"
+        }, 
+        {
+            "location": "/architecture/decisions/0004-event-driven-decoupling-with-onyx/#characteristics-addressed", 
+            "text": "It's got X-Factor scale (yes, the TV show)  It always knows what happened  It expects to change  It's resistant to failure", 
+            "title": "Characteristics addressed"
+        }, 
+        {
+            "location": "/architecture/decisions/0004-event-driven-decoupling-with-onyx/#context", 
+            "text": "The main driver for moving to an event-driven architecture is flexibility - when everything is an event, more parts of the application can be added that simply listen out for those events, and perform their own actions with them.  Where we'd like to take this further is to store these events forever, meaning at any point we can add a new component and replay the data from the applications inception.  There are examples of this having been experimented with, such as   https://github.com/Yuppiechef/cqrs-server", 
+            "title": "Context"
+        }, 
+        {
+            "location": "/architecture/decisions/0004-event-driven-decoupling-with-onyx/#decision", 
+            "text": "Decision here...", 
+            "title": "Decision"
+        }, 
+        {
+            "location": "/architecture/decisions/0004-event-driven-decoupling-with-onyx/#consequences", 
+            "text": "Consequences here...", 
+            "title": "Consequences"
+        }, 
+        {
+            "location": "/architecture/decisions/0005-ci-builds-with-circleci/", 
+            "text": "5. CI builds with CircleCI\n\n\nDate: 2018-02-22\n\n\nStatus\n\n\nAccepted\n\n\nContext\n\n\nThe query server introduced some automated tests we want to keep maintained and passing, and I'd like one of those little \n badges, and a place to publish our coverage reports. Onyx is probably about to make our deployment a bit more complex so it would be good to have something that can deploy to a cloud server.  Having seen first hand how complex Jenkins can get I am drawn towards CI/CD servers that rely entirely on a file in the repository for configuration.  I've recently had experience with circleci and particularly liked the ability to run local builds when testing.\n\n\nDecision\n\n\nWe'll go with circleci for now - it was simple to set up and will be simple to leave if it doesn't fit the bill later.  If we were running a server locally I'd look at https://concourse.ci/\n\n\nConsequences\n\n\nThe documentation can be found here: https://circleci.com/docs/2.0/\nThe configuration file is in ./circleci/config.yml.  You can click on the badge to see the build runs.", 
+            "title": "5. CI builds with CircleCI"
+        }, 
+        {
+            "location": "/architecture/decisions/0005-ci-builds-with-circleci/#5-ci-builds-with-circleci", 
+            "text": "Date: 2018-02-22", 
+            "title": "5. CI builds with CircleCI"
+        }, 
+        {
+            "location": "/architecture/decisions/0005-ci-builds-with-circleci/#status", 
+            "text": "Accepted", 
+            "title": "Status"
+        }, 
+        {
+            "location": "/architecture/decisions/0005-ci-builds-with-circleci/#context", 
+            "text": "The query server introduced some automated tests we want to keep maintained and passing, and I'd like one of those little   badges, and a place to publish our coverage reports. Onyx is probably about to make our deployment a bit more complex so it would be good to have something that can deploy to a cloud server.  Having seen first hand how complex Jenkins can get I am drawn towards CI/CD servers that rely entirely on a file in the repository for configuration.  I've recently had experience with circleci and particularly liked the ability to run local builds when testing.", 
+            "title": "Context"
+        }, 
+        {
+            "location": "/architecture/decisions/0005-ci-builds-with-circleci/#decision", 
+            "text": "We'll go with circleci for now - it was simple to set up and will be simple to leave if it doesn't fit the bill later.  If we were running a server locally I'd look at https://concourse.ci/", 
+            "title": "Decision"
+        }, 
+        {
+            "location": "/architecture/decisions/0005-ci-builds-with-circleci/#consequences", 
+            "text": "The documentation can be found here: https://circleci.com/docs/2.0/\nThe configuration file is in ./circleci/config.yml.  You can click on the badge to see the build runs.", 
+            "title": "Consequences"
+        }, 
+        {
             "location": "/components/query/", 
             "text": "Query server\n\n\nDemonstration\n\n\n\n\n\nCode structure\n\n\nAll code is in the subdirectory \nquery\n\n\n\n\napp\n is domain specific - it defines the spec to use in query generation as well as the startup of the application\n\n\njournal\n is framework code for the query server\n\n\njournal/spectool\n is framework code for the query server generation\n\n\n\n\nWhat it does\n\n\nThere are two parts to this component\n\n Query server generation\n\n Query server\n\n\nQuery server generation\n\n\nThe functions defined in \njournal/spectool\n use\n\n clojure.spec definitions\n\n An application schema (a clojure map that adds information to this spec)\n* A map of resolver functions\nto create a lacinia schema (written to \nresources/graphql.edn\n) and a datomic schema (written to \nresources/datomic/*.edn\n)\n\n\nThis action is attached to the boot task \nwrite-schema\n which calls \napp.spec/write-app-schema\n.\n\n\nQuery server\n\n\nThe query server takes the schemas above and starts a datomic instance and http-kit server, using the map of resolver functions to integrate lacinia and datomic.\n\n\nHow to use it\n\n\nbrew install boot-clj\ngit clone https://github.com/p14n/journal\ncd journal/query\n\n\n\nQuery server generation\n\n\nboot write-schema\n\n\n\nQuery server\n\n\nboot repl\n\n (dev)\n\n (start)\n\n\n\nTo run unit tests while developing\n\n\nboot watch-test\n\n\n\nTo reload the server after changes\n\n\n (boot.user/reset)\n\n\n\nNavigate to http://localhost:8085/query/graphiql/graphiql.html\n\n\nTesting\n\n\nboot coverage", 
             "title": "Query server"

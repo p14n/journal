@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../../img/favicon.ico">
-  <title>1. Record architecture decisions - Journal</title>
+  <title>4. Event-driven decoupling with Onyx - Journal</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../../css/theme.css" type="text/css" />
@@ -17,9 +17,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "1. Record architecture decisions";
-    var mkdocs_page_input_path = "architecture/decisions/0001-record-architecture-decisions.md";
-    var mkdocs_page_url = "/architecture/decisions/0001-record-architecture-decisions/";
+    var mkdocs_page_name = "4. Event-driven decoupling with Onyx";
+    var mkdocs_page_input_path = "architecture/decisions/0004-event-driven-decoupling-with-onyx.md";
+    var mkdocs_page_url = "/architecture/decisions/0004-event-driven-decoupling-with-onyx/";
   </script>
   
   <script src="../../../js/jquery-2.1.1.min.js"></script>
@@ -60,16 +60,30 @@
                     
     <span class="caption-text">Decisions</span>
     <ul class="subnav">
+                <li class="toctree-l3">
+                    
+    <a class="" href="../0001-record-architecture-decisions/">1. Record architecture decisions</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../0002-use-clojure-graphql-datomic-query-server/">2. Use clojure/graphql/datomic query server</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../0003-add-logging-as-a-first-class-citizen/">3. Add logging as a first-class citizen</a>
+                </li>
                 <li class="toctree-l3 current">
                     
-    <a class="current" href="./">1. Record architecture decisions</a>
+    <a class="current" href="./">4. Event-driven decoupling with Onyx</a>
     <ul class="subnav">
             
-    <li class="toctree-l4"><a href="#1-record-architecture-decisions">1. Record architecture decisions</a></li>
+    <li class="toctree-l4"><a href="#4-event-driven-decoupling-with-onyx">4. Event-driven decoupling with Onyx</a></li>
     
         <ul>
         
             <li><a class="toctree-l5" href="#status">Status</a></li>
+        
+            <li><a class="toctree-l5" href="#characteristics-addressed">Characteristics addressed</a></li>
         
             <li><a class="toctree-l5" href="#context">Context</a></li>
         
@@ -81,18 +95,6 @@
     
 
     </ul>
-                </li>
-                <li class="toctree-l3">
-                    
-    <a class="" href="../0002-use-clojure-graphql-datomic-query-server/">0002 use clojure graphql datomic query server</a>
-                </li>
-                <li class="toctree-l3">
-                    
-    <a class="" href="../0003-add-logging-as-a-first-class-citizen/">0003 add logging as a first class citizen</a>
-                </li>
-                <li class="toctree-l3">
-                    
-    <a class="" href="../0004-event-driven-decoupling-with-onyx/">0004 event driven decoupling with onyx</a>
                 </li>
                 <li class="toctree-l3">
                     
@@ -144,7 +146,7 @@
         
       
     
-    <li>1. Record architecture decisions</li>
+    <li>4. Event-driven decoupling with Onyx</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -154,16 +156,24 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="1-record-architecture-decisions">1. Record architecture decisions</h1>
-<p>Date: 2017-11-21</p>
+                <h1 id="4-event-driven-decoupling-with-onyx">4. Event-driven decoupling with Onyx</h1>
+<p>Date: 2018-02-07</p>
 <h2 id="status">Status</h2>
-<p>Accepted</p>
+<p>Proposed</p>
+<h2 id="characteristics-addressed">Characteristics addressed</h2>
+<ul>
+<li>It's got X-Factor scale (yes, the TV show)</li>
+<li>It always knows what happened</li>
+<li>It expects to change</li>
+<li>It's resistant to failure</li>
+</ul>
 <h2 id="context">Context</h2>
-<p>We need to record the architectural decisions made on this project.</p>
+<p>The main driver for moving to an event-driven architecture is flexibility - when everything is an event, more parts of the application can be added that simply listen out for those events, and perform their own actions with them.  Where we'd like to take this further is to store these events forever, meaning at any point we can add a new component and replay the data from the applications inception.  There are examples of this having been experimented with, such as </p>
+<p>https://github.com/Yuppiechef/cqrs-server</p>
 <h2 id="decision">Decision</h2>
-<p>We will use Architecture Decision Records, as described by Michael Nygard in this article: http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions</p>
+<p>Decision here...</p>
 <h2 id="consequences">Consequences</h2>
-<p>See Michael Nygard's article, linked above. For a lightweight ADR toolset, see Nat Pryce's <em>adr-tools</em> at https://github.com/npryce/adr-tools.</p>
+<p>Consequences here...</p>
               
             </div>
           </div>
@@ -171,10 +181,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../0002-use-clojure-graphql-datomic-query-server/" class="btn btn-neutral float-right" title="0002 use clojure graphql datomic query server">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../0005-ci-builds-with-circleci/" class="btn btn-neutral float-right" title="0005 ci builds with circleci">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../../.." class="btn btn-neutral" title="Journal"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../0003-add-logging-as-a-first-class-citizen/" class="btn btn-neutral" title="3. Add logging as a first-class citizen"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -200,10 +210,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../../.." style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../0003-add-logging-as-a-first-class-citizen/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../0002-use-clojure-graphql-datomic-query-server/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../0005-ci-builds-with-circleci/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
