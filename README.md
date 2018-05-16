@@ -29,4 +29,4 @@ You can read more about each of these
 
 ## You had me at 'Nothing actually useful', where do I read more?
 
-Read the [https://p14n.github.io/journal/](docs), and jump into the architecture decision records to see the journey
+Read the [docs](https://p14n.github.io/journal/), and jump into the architecture decision records to see the journey
